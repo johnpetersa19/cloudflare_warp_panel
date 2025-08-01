@@ -17,7 +17,7 @@ Aqui estão algumas capturas de tela do aplicativo em ação:
 Tela inicial (Conectado)
 Tela inicial (Desconectado)
 
-![Imagem da tela inicial do Cloudflare WARP Panel, mostrando o status desconectado](docs/inicial 1.png)
+![Imagem da tela inicial do Cloudflare WARP Panel, mostrando o status desconectado](docs/inicial_1.png)
 Tela de opções
 Tecnologias
 
