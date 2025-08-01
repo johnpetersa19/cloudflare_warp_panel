@@ -16,14 +16,14 @@ Um painel gráfico (GUI) para gerenciar o cliente Cloudflare WARP em sistemas Li
 
 ## Capturas de Tela
 
-### Tela inicial (Conectado)
+### Tela inicial (Conectado)  
 ![Tela inicial conectada](docs/inicial.png)
 
-### Tela inicial (Desconectado)
+### Tela inicial (Desconectada)  
 ![Tela inicial desconectada](docs/inicial_1.png)
 
-### Tela de opções
-*(adicione aqui a imagem da tela de opções se disponível)*
+### Tela de opções / configurações  
+![Tela de configurações](docs/opçoes.png)
 
 ---
 
@@ -48,3 +48,35 @@ No terminal, dentro da pasta do projeto, execute:
 
 ```bash
 flutter run -d linux
+```
+
+### Construindo a versão de lançamento
+
+Para gerar uma versão otimizada para distribuição:
+
+```bash
+flutter build linux
+```
+
+O executável será gerado em:
+
+```
+build/linux/x64/release/bundle
+```
+
+---
+
+## Contribuição
+
+Se você é desenvolvedor Flutter e deseja colaborar com o projeto, sinta-se à vontade para:
+
+- **Abrir uma Issue:** Para reportar bugs, comportamentos inesperados ou sugerir funcionalidades.
+- **Abrir um Pull Request:** Para contribuir diretamente com código.
+
+Agradecemos sua ajuda para melhorar este projeto!
+
+---
+
+## Licença
+
+*(adicione aqui informações sobre a licença do projeto, se houver)*
