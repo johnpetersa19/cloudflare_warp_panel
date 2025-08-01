@@ -179,7 +179,7 @@ Have an amazing idea? [Create an Issue](https://github.com/johnpetersa19/cloudfl
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License. See the [[LICENSE](https://github.com/johnpetersa19/cloudflare_warp_panel/blob/main/LICENSE.txt)] file for more details.
 
 ---
 
