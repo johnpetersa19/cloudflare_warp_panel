@@ -5,9 +5,10 @@ import 'warp_control_screen.dart';
 void main() {
   runApp(const MyApp());
   doWhenWindowReady(() {
-    final initialSize = const Size(400, 550); // ajuste o tamanho conforme seu painel
-    appWindow.minSize = initialSize;
-    appWindow.size = initialSize;
+    const fixedSize = Size(400, 540);
+    appWindow.minSize = fixedSize;
+    appWindow.size = fixedSize;
+    appWindow.maxSize = fixedSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = "Cloudflare WARP Panel";
     appWindow.show();
