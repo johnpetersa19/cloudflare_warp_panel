@@ -83,7 +83,19 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Settings'),
+          // Fundo branco como a tela principal
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          title: const Text(
+            'Settings',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87, // Cor do texto do título para o fundo branco
+            ),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
