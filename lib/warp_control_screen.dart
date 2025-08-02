@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 
 class WarpControlScreen extends StatefulWidget {
   const WarpControlScreen({super.key});
@@ -14,6 +15,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   String _statusText = 'DISCONNECTED';
   String _privateText = 'Your Internet is not private.';
   String _currentIconPath = 'assets/zero-trust-disconnected.svg';
+  String _warpCliVersion = 'Carregando...'; // Variável para a versão do warp-cli
   final Color _warpColor = const Color(0xFFF65B54);
   final Color _disconnectColor = Colors.grey[400]!;
 
@@ -21,6 +23,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   void initState() {
     super.initState();
     _checkWarpStatus();
+    _getWarpCliVersion(); // Chama a função para obter a versão do warp-cli
 
     // Impede redimensionamento (fixo)
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -30,6 +33,18 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
       // appWindow.maxSize = const Size(350, 450);
     });
   }
+
+// Função para obter a versão do warp-cli usando a flag `--version`
+Future<void> _getWarpCliVersion() async {
+  // A chamada para o comando deve usar a opção `--version`
+  final versionOutput = await _executeWarpCommand('--version');
+  
+  if (mounted) {
+    setState(() {
+      _warpCliVersion = versionOutput;
+    });
+  }
+}
 
   Future<String> _executeWarpCommand(String command, [List<String> arguments = const []]) async {
     try {
@@ -77,13 +92,104 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
     await Future.delayed(const Duration(seconds: 2));
     await _checkWarpStatus();
   }
+  
+  Future<void> _launchUrl(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw 'Não foi possível abrir o URL: $url';
+    }
+  }
+
+// Novo método para mostrar a janela "About Zero Trust"
+void _showAboutZeroTrustDialog() {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: const Text(
+                'About Cloudflare',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+        // Envolva o Column em um SingleChildScrollView para evitar o overflow
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPicture.asset(
+                'assets/cloudflare-logo.svg',
+                width: 100,
+              ),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: () => _launchUrl('https://www.cloudflare.com/pt-br/application/privacypolicy/'),
+                child: const Text(
+                  'Privacy policy',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () => _launchUrl('https://www.cloudflare.com/pt-br/application/terms/'),
+                child: const Text(
+                  'Terms of service',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () => _launchUrl('https://developers.cloudflare.com/warp-client/legal/3rdparty/'),
+                child: const Text(
+                  'Third party licenses',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text('Version $_warpCliVersion'), // Usa a versão do warp-cli
+              const SizedBox(height: 8),
+              const Text('Copyright © 2023 Cloudflare, Inc.'),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
   void _showSettingsMenu() {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          // Fundo branco como a tela principal
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
@@ -93,7 +199,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.black87, // Cor do texto do título para o fundo branco
+              color: Colors.black87,
             ),
           ),
           content: Column(
@@ -134,6 +240,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
                 title: const Text('About Zero Trust'),
                 onTap: () {
                   if (mounted) Navigator.of(context).pop();
+                  _showAboutZeroTrustDialog();
                 },
               ),
             ],
@@ -145,7 +252,6 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Painel único, fundo branco sem sombra nem borda
     return Material(
       color: Colors.white,
       child: Center(
@@ -154,9 +260,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
           height: 450,
           child: Column(
             children: [
-              // Espaço para topo, já que a janela tem barra própria
               const SizedBox(height: 24),
-              // Conteúdo principal
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
