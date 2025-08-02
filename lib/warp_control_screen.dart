@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'dart:io';
 
 class WarpControlScreen extends StatefulWidget {
@@ -22,22 +21,26 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   void initState() {
     super.initState();
     _checkWarpStatus();
+
+    // Impede redimensionamento (fixo)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Só funciona para desktop (Windows, Linux, Mac)
+      // Use bitsdojo_window para travar tamanho (se disponível)
+      // appWindow.minSize = const Size(350, 450);
+      // appWindow.maxSize = const Size(350, 450);
+    });
   }
 
   Future<String> _executeWarpCommand(String command, [List<String> arguments = const []]) async {
     try {
       final List<String> cmdArgs = [command, ...arguments];
-      print('DEBUG: Comando executado: /usr/bin/warp-cli ${cmdArgs.join(' ')}');
       final result = await Process.run('/usr/bin/warp-cli', cmdArgs);
       if (result.exitCode == 0) {
-        print('DEBUG: Saída do comando: ${result.stdout}');
         return result.stdout.toString().trim();
       } else {
-        print('Erro ao executar $command: ${result.stderr}');
         return 'Erro: ${result.stderr}';
       }
     } catch (e) {
-      print('Exceção ao tentar executar o comando: $e');
       return 'Erro: O comando warp-cli falhou.';
     }
   }
@@ -89,9 +92,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
                 onTap: () async {
                   await _executeWarpCommand('mode', ['doh']);
                   await _checkWarpStatus();
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                  }
+                  if (mounted) Navigator.of(context).pop();
                 },
               ),
               ListTile(
@@ -99,9 +100,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
                 onTap: () async {
                   await _executeWarpCommand('mode', ['warp']);
                   await _checkWarpStatus();
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                  }
+                  if (mounted) Navigator.of(context).pop();
                 },
               ),
               const Divider(),
@@ -110,25 +109,19 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
                 onTap: () async {
                   await _executeWarpCommand('disconnect');
                   await _checkWarpStatus();
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                  }
+                  if (mounted) Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 title: const Text('Re-authenticate session'),
                 onTap: () {
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                  }
+                  if (mounted) Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 title: const Text('About Zero Trust'),
                 onTap: () {
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                  }
+                  if (mounted) Navigator.of(context).pop();
                 },
               ),
             ],
@@ -140,70 +133,24 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // O painel é a janela, fundo transparente fora dele!
+    // Painel único, fundo branco sem sombra nem borda
     return Material(
-      color: Colors.transparent,
+      color: Colors.white,
       child: Center(
-        child: Container(
+        child: SizedBox(
           width: 350,
           height: 450,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.10),
-                spreadRadius: 8,
-                blurRadius: 28,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
           child: Column(
             children: [
-              // Barra personalizada com minimizar e fechar
-              SizedBox(
-                height: 42,
-                child: Stack(
-                  children: [
-                    // Área para arrastar a janela
-                    Positioned.fill(
-                      child: MoveWindow(),
-                    ),
-                    // Botões minimizar e fechar no topo direito
-                    Positioned(
-                      top: 8,
-                      right: 20,
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove, size: 22),
-                            splashRadius: 18,
-                            onPressed: () {
-                              appWindow.minimize();
-                            },
-                          ),
-                          const SizedBox(width: 4),
-                          IconButton(
-                            icon: const Icon(Icons.close, size: 26),
-                            splashRadius: 18,
-                            onPressed: () {
-                              appWindow.close();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Conteúdo do painel
+              // Espaço para topo, já que a janela tem barra própria
+              const SizedBox(height: 24),
+              // Conteúdo principal
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     const Padding(
-                      padding: EdgeInsets.only(top: 8.0),
+                      padding: EdgeInsets.only(top: 0.0),
                       child: Text(
                         'WARP',
                         style: TextStyle(
