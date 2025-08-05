@@ -20,34 +20,119 @@
 
 ---
 
-## ✨ Features
+## ✨ Current Features
+
+### ✅ **Implemented**
 
 <table>
 <tr>
 <td>
 
-### 🔌 **Simple Control**
-Connect and disconnect from Cloudflare WARP service with just one click
+### 🔌 **Connection Control**
+- Connect/disconnect WARP with one click
+- Real-time connection status display
+- Visual status indicators (CONNECTED/DISCONNECTED)
 
 </td>
 <td>
 
-### 📊 **Real-time Status**
-View your connection status clearly and intuitively
+### ⚙️ **Basic Settings**
+- Mode switching (DoH/WARP)
+- Session logout and re-authentication
+- Debug access re-authentication
 
 </td>
 </tr>
 <tr>
 <td>
 
-### 🎨 **Minimalist Interface**
-Clean and modern design that integrates perfectly with your desktop
+### 📋 **Registration Management**
+- View current registration information
+- Delete existing registration
+- Register new WARP client
 
 </td>
 <td>
 
-### ⚙️ **Advanced Settings**
-Access options and configurations through a user-friendly interface
+### ℹ️ **Information Panel**
+- About Cloudflare window with version info
+- Privacy policy and terms of service links
+- Third-party licenses information
+
+</td>
+</tr>
+</table>
+
+### 🚧 **In Development**
+
+<table>
+<tr>
+<td>
+
+### 🌐 **DNS Settings**
+- DNS fallback configuration
+- DNS logging toggle
+- DNS families management
+
+</td>
+<td>
+
+### 🔗 **Proxy Configuration**
+- Custom proxy port settings
+- Proxy mode management
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 🎯 **Target Management**
+- List available targets
+- Target switching interface
+
+</td>
+<td>
+
+### 🛡️ **Trusted Networks**
+- Ethernet trust settings
+- WiFi trust configuration
+- SSID whitelist management
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 📊 **Statistics & Monitoring**
+- Usage statistics display
+- Connection analytics
+- Performance metrics
+
+</td>
+<td>
+
+### 🔧 **Debug Tools**
+- Network debugging interface
+- Posture checking tools
+- Advanced diagnostics
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 🚇 **Tunnel Settings**
+- Tunnel statistics
+- Host and IP configuration
+- Key rotation and protocol settings
+
+</td>
+<td>
+
+### 🔌 **Advanced Features**
+- Connector registration
+- Compliance environment settings
+- Virtual network (VNet) management
 
 </td>
 </tr>
@@ -93,7 +178,7 @@ Access options and configurations through a user-friendly interface
 Before starting, make sure you have:
 
 - ✅ **Flutter SDK** installed and configured
-- ✅ **Cloudflare WARP client** installed on Linux system
+- ✅ **Cloudflare WARP client** (`warp-cli`) installed on Linux system
 - ✅ **Linux dependencies** for Flutter development
 
 ### 🔧 Development Mode
@@ -136,6 +221,19 @@ chmod +x build/linux/x64/release/bundle/cloudflare_warp_panel
 
 ---
 
+## 🏗️ Architecture
+
+The application is built with a modular architecture:
+
+- **Main Control Panel**: Central hub for connection management
+- **Settings Dialogs**: Organized configuration windows
+- **Command Executor**: Generic `warp-cli` command interface
+- **Status Manager**: Real-time connection state monitoring
+
+All functionality is based on the `_executeWarpCommand` function, which provides a standardized way to interact with the Cloudflare WARP CLI.
+
+---
+
 ## 🤝 Contributing
 
 <div align="center">
@@ -158,6 +256,14 @@ Have an amazing idea? [Create an Issue](https://github.com/johnpetersa19/cloudfl
 - Mockups or examples (optional)
 
 ### 🔧 Contribute Code
+
+Priority areas for contribution:
+- **DNS Settings Implementation**: Complete the DNS configuration interface
+- **Statistics Dashboard**: Build the usage statistics display
+- **Trusted Networks**: Implement network trust management
+- **UI/UX Improvements**: Enhance the user interface design
+- **Error Handling**: Improve error messages and validation
+
 1. **Fork** this repository
 2. **Create** a branch for your feature (`git checkout -b feature/awesome-feature`)
 3. **Commit** your changes (`git commit -m 'Add awesome feature'`)
@@ -166,11 +272,30 @@ Have an amazing idea? [Create an Issue](https://github.com/johnpetersa19/cloudfl
 
 ---
 
-## 📊 Roadmap
+## 📊 Development Roadmap
 
+### 🎯 **Phase 1 - Core Features** (Current)
+- [x] Basic connection control
+- [x] Registration management
+- [x] Settings foundation
+- [ ] DNS configuration interface
+- [ ] Proxy settings panel
+
+### 🎯 **Phase 2 - Advanced Management**
+- [ ] Statistics and monitoring
+- [ ] Trusted networks configuration
+- [ ] Debug tools interface
+- [ ] Tunnel management
+
+### 🎯 **Phase 3 - Professional Features**
+- [ ] Connector support
+- [ ] Environment compliance
+- [ ] VNet management
+- [ ] Advanced debugging
+
+### 🎯 **Phase 4 - Enhancement**
 - [ ] 🌐 Multi-language support
 - [ ] 🔔 System notifications
-- [ ] 📈 Usage statistics
 - [ ] 🎨 Customizable themes
 - [ ] 🚀 Auto-updater
 - [ ] 📱 Support for other operating systems
