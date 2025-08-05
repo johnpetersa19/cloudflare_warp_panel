@@ -185,7 +185,84 @@ void _showAboutZeroTrustDialog() {
   );
 }
 
-  void _showSettingsMenu() {
+  // NOVA JANELA: Registration Settings
+  void _showRegistrationSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          title: const Text(
+            'Registration Settings',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+            ListTile(
+                title: const Text('Show registration info'),
+                onTap: () async {
+                  final result = await _executeWarpCommand('registration', ['show']);
+                  // Fecha a janela de 'Registration Settings' primeiro.
+                  if (mounted) Navigator.of(context).pop();
+                  // Abre a nova janela com o resultado.
+                  _showResultDialog('Registration Info', result);
+                },
+              ),
+              ListTile(
+                title: const Text('Delete current registration'),
+                onTap: () async {
+                  await _executeWarpCommand('registration', ['delete']);
+                  await _checkWarpStatus();
+                  if (mounted) Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: const Text('Register new client'),
+                onTap: () async {
+                  await _executeWarpCommand('registration', ['delete']);
+                  await _executeWarpCommand('registration', ['new']);
+                  await _checkWarpStatus();
+                  if (mounted) Navigator.of(context).pop();
+                },
+              ),
+              // Adicione mais ListTiles para os outros comandos 'registration' conforme a necessidade
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Função auxiliar para mostrar o resultado de um comando em um AlertDialog
+  void _showResultDialog(String title, String content) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(child: Text(content)),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+void _showSettingsMenu() {
     showDialog(
       context: context,
       builder: (context) {
@@ -202,54 +279,65 @@ void _showAboutZeroTrustDialog() {
               color: Colors.black87,
             ),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: const Text('Gateway with DoH'),
-                onTap: () async {
-                  await _executeWarpCommand('mode', ['doh']);
-                  await _checkWarpStatus();
-                  if (mounted) Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title: const Text('Gateway with WARP'),
-                onTap: () async {
-                  await _executeWarpCommand('mode', ['warp']);
-                  await _checkWarpStatus();
-                  if (mounted) Navigator.of(context).pop();
-                },
-              ),
-              const Divider(),
-              ListTile(
-                title: const Text('Logout from Zero Trust'),
-                onTap: () async {
-                  await _executeWarpCommand('disconnect');
-                  await _checkWarpStatus();
-                  if (mounted) Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title: const Text('Re-authenticate session'),
-                onTap: () {
-                  if (mounted) Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title: const Text('About Zero Trust'),
-                onTap: () {
-                  if (mounted) Navigator.of(context).pop();
-                  _showAboutZeroTrustDialog();
-                },
-              ),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: const Text('Gateway with DoH'),
+                  onTap: () async {
+                    await _executeWarpCommand('mode', ['doh']);
+                    await _checkWarpStatus();
+                    if (mounted) Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  title: const Text('Gateway with WARP'),
+                  onTap: () async {
+                    await _executeWarpCommand('mode', ['warp']);
+                    await _checkWarpStatus();
+                    if (mounted) Navigator.of(context).pop();
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  title: const Text('Logout from Zero Trust'),
+                  onTap: () async {
+                    await _executeWarpCommand('disconnect');
+                    await _checkWarpStatus();
+                    if (mounted) Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  title: const Text('Re-authenticate session'),
+                  onTap: () async {
+                    // Comando CORRETO para reautenticar a sessão
+                    await _executeWarpCommand('debug', ['access-reauth']);
+                    await _checkWarpStatus();
+                    if (mounted) Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  title: const Text('Registration Settings'),
+                  onTap: () {
+                    if (mounted) Navigator.of(context).pop();
+                    _showRegistrationSettingsDialog();
+                  },
+                ),
+                ListTile(
+                  title: const Text('About Zero Trust'),
+                  onTap: () {
+                    if (mounted) Navigator.of(context).pop();
+                    _showAboutZeroTrustDialog();
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Material(
