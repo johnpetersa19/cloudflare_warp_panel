@@ -1,29 +1,44 @@
+// main.dart
 import 'package:flutter/material.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Importe shared_preferences
 import 'warp_control_screen.dart';
+import 'legal_notice_screen.dart'; // Importe a tela de aviso legal
 
-void main() {
-  runApp(const MyApp());
+void main() async { // Torne o main assíncrono
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+
+  final prefs = await SharedPreferences.getInstance();
+  final hasSeenLegalNotice = prefs.getBool('hasSeenLegalNotice') ?? false;
+
+  runApp(MyApp(hasSeenLegalNotice: hasSeenLegalNotice));
+
   doWhenWindowReady(() {
-    const fixedSize = Size(400, 540);
+    const fixedSize = Size(500, 640);
     appWindow.minSize = fixedSize;
     appWindow.size = fixedSize;
     appWindow.maxSize = fixedSize;
     appWindow.alignment = Alignment.center;
     appWindow.title = "Cloudflare WARP Panel";
     appWindow.show();
-    // appWindow.setEffect(WindowEffect.transparent); // REMOVA OU COMENTE ESTA LINHA!
+
   });
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool hasSeenLegalNotice;
+
+  const MyApp({super.key, required this.hasSeenLegalNotice});
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Cloudflare WARP Panel',
       debugShowCheckedModeBanner: false,
-      home: WarpControlScreen(),
+
+      home: hasSeenLegalNotice ? const WarpControlScreen() : const LegalNoticeScreen(),
     );
   }
 }
