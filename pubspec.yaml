@@ -1,6 +1,6 @@
 name: cloudflare_warp_panel
 description: A graphical panel for Cloudflare WARP on Linux.
-version: 1.0.0+1
+version: 5.0.1+1
 publish_to: 'none'
 
 environment:
@@ -12,8 +12,9 @@ dependencies:
   flutter_svg: ^2.0.7
   bitsdojo_window: ^0.1.5
   url_launcher: ^6.1.14
-  package_info_plus: ^5.0.1 
+  package_info_plus: ^5.0.1 # Pacote para ler a versão do app
   shared_preferences: ^2.2.3
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
