@@ -278,27 +278,26 @@ Priority areas for contribution:
 - [x] Basic connection control
 - [x] Registration management
 - [x] Settings foundation
-- [ ] DNS configuration interface
-- [ ] Proxy settings panel
+- [x] DNS configuration interface
+- [x] Proxy settings panel
 
 ### 🎯 **Phase 2 - Advanced Management**
-- [ ] Statistics and monitoring
-- [ ] Trusted networks configuration
-- [ ] Debug tools interface
-- [ ] Tunnel management
+- [x] Statistics and monitoring
+- [x] Trusted networks configuration
+- [x] Debug tools interface
+- [x] Tunnel management
 
 ### 🎯 **Phase 3 - Professional Features**
-- [ ] Connector support
-- [ ] Environment compliance
-- [ ] VNet management
-- [ ] Advanced debugging
+- [x] Connector support
+- [x] Environment compliance
+- [x] VNet management
+- [x] Advanced debugging
 
 ### 🎯 **Phase 4 - Enhancement**
 - [ ] 🌐 Multi-language support
 - [ ] 🔔 System notifications
 - [ ] 🎨 Customizable themes
 - [ ] 🚀 Auto-updater
-- [ ] 📱 Support for other operating systems
 
 ---
 
