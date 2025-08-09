@@ -166,7 +166,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
           } else if (modeOutput.contains('Mode: WarpWithDnsOverTls')) {
             _currentWarpMode = 'warp+dot';
             _mainTitle = 'WARP + DoT';
-          } else if (modeOutput.contains('Mode: Proxy')) {
+          } else if (modeOutput.contains('Mode: Proxy') || modeOutput.contains('Mode: WarpProxy')) {
             _currentWarpMode = 'proxy';
             _mainTitle = 'Proxy';
           } else if (modeOutput.contains('Mode: TunnelOnly')) {
@@ -1040,13 +1040,15 @@ void _showSettingsMenu() {
                     onChanged: (value) async {
                       if (value != null) {
                         await _executeWarpCommand('mode', ['proxy']);
-                        // Atualiza o estado localmente para flegar a opção
+                        
+                        // Atualiza o estado localmente para flegar a opção no diálogo
                         setState(() {
                           _currentWarpMode = value;
-                          // A chamada para a atualização do título principal deve ser aqui
-                          _getWarpModeFromCli();
                         });
+                        
+                        // Aguarda a atualização do modo e, em seguida, atualiza o widget principal
                         if (mounted) {
+                          await _getWarpModeFromCli();
                           Navigator.of(context).pop();
                         }
                       }
