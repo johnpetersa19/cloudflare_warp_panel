@@ -6,9 +6,8 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 import 'zero_trust_login_screen.dart';
-import 'trusted_networks_dialog.dart'; // Importa o novo arquivo
-
-// A classe TrustedNetworksDialog e sua classe de estado foram movidas para 'trusted_networks_dialog.dart'
+import 'trusted_networks_dialog.dart';
+import 'network_speed_widget.dart';
 
 class WarpControlScreen extends StatefulWidget {
   const WarpControlScreen({super.key});
@@ -173,7 +172,6 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
             _currentWarpMode = 'tunnel_only';
             _mainTitle = 'Tunnel Only';
           } else {
-            // Se o modo for WARP puro, deve ser a última verificação
             _currentWarpMode = 'warp';
             _mainTitle = 'WARP';
           }
@@ -446,7 +444,6 @@ void _showTrustedNetworksDialog() {
   showDialog(
     context: context,
     builder: (context) {
-      // Passa as funções necessárias como parâmetros para a nova classe de diálogo
       return TrustedNetworksDialog(
         executeWarpCommand: _executeWarpCommand,
         showTrustedSsidsDialog: _showTrustedSsidsDialog,
@@ -592,7 +589,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Fecha o diálogo
+              Navigator.of(context).pop();
             },
             child: const Text(
               'Cancel',
@@ -604,8 +601,8 @@ void _showLogoutConfirmationDialog(BuildContext context) {
               await _executeWarpCommand('disconnect');
               _checkWarpStatus();
               if (mounted) {
-                Navigator.of(context).pop(); // Fecha o diálogo de confirmação
-                Navigator.of(context).pop(); // Fecha o menu de configurações
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               }
             },
             child: const Text('Confirm logout'),
@@ -754,10 +751,6 @@ void _showCertsDialog() async {
     _showResultDialog('Account Certificates', result);
   }
 }
-
-// ==========================================================
-// FUNÇÕES DE SUBMENU PARA 'TRUSTED' E 'LOCAL-NETWORK'
-// ==========================================================
 
 void _showLocalNetworkOverrideDialog() {
   showDialog(
@@ -912,9 +905,6 @@ void _showRemoveSsidsDialog() {
 }
 
 
-// ==========================================================
-// FUNÇÃO DO MENU DE CONFIGURAÇÕES (showSettingsMenu) ATUALIZADA
-// ==========================================================
 void _showSettingsMenu() {
   showDialog(
     context: context,
@@ -945,10 +935,8 @@ void _showSettingsMenu() {
                     onChanged: (value) async {
                       if (value != null) {
                         await _executeWarpCommand('mode', ['doh']);
-                        // Atualiza o estado localmente para flegar a opção
                         setState(() {
                           _currentWarpMode = value;
-                          // A chamada para a atualização do título principal deve ser aqui
                           _getWarpModeFromCli();
                         });
                         if (mounted) {
@@ -964,10 +952,8 @@ void _showSettingsMenu() {
                     onChanged: (value) async {
                       if (value != null) {
                         await _executeWarpCommand('mode', ['warp']);
-                        // Atualiza o estado localmente para flegar a opção
                         setState(() {
                           _currentWarpMode = value;
-                          // A chamada para a atualização do título principal deve ser aqui
                           _getWarpModeFromCli();
                         });
                         if (mounted) {
@@ -983,10 +969,8 @@ void _showSettingsMenu() {
                     onChanged: (value) async {
                       if (value != null) {
                         await _executeWarpCommand('mode', ['warp+doh']);
-                        // Atualiza o estado localmente para flegar a opção
                         setState(() {
                           _currentWarpMode = value;
-                          // A chamada para a atualização do título principal deve ser aqui
                           _getWarpModeFromCli();
                         });
                         if (mounted) {
@@ -1002,10 +986,8 @@ void _showSettingsMenu() {
                     onChanged: (value) async {
                       if (value != null) {
                         await _executeWarpCommand('mode', ['dot']);
-                        // Atualiza o estado localmente para flegar a opção
                         setState(() {
                           _currentWarpMode = value;
-                          // A chamada para a atualização do título principal deve ser aqui
                           _getWarpModeFromCli();
                         });
                         if (mounted) {
@@ -1021,10 +1003,8 @@ void _showSettingsMenu() {
                     onChanged: (value) async {
                       if (value != null) {
                         await _executeWarpCommand('mode', ['warp+dot']);
-                        // Atualiza o estado localmente para flegar a opção
                         setState(() {
                           _currentWarpMode = value;
-                          // A chamada para a atualização do título principal deve ser aqui
                           _getWarpModeFromCli();
                         });
                         if (mounted) {
@@ -1041,12 +1021,10 @@ void _showSettingsMenu() {
                       if (value != null) {
                         await _executeWarpCommand('mode', ['proxy']);
                         
-                        // Atualiza o estado localmente para flegar a opção no diálogo
                         setState(() {
                           _currentWarpMode = value;
                         });
                         
-                        // Aguarda a atualização do modo e, em seguida, atualiza o widget principal
                         if (mounted) {
                           await _getWarpModeFromCli();
                           Navigator.of(context).pop();
@@ -1061,10 +1039,8 @@ void _showSettingsMenu() {
                     onChanged: (value) async {
                       if (value != null) {
                         await _executeWarpCommand('mode', ['tunnel_only']);
-                        // Atualiza o estado localmente para flegar a opção
                         setState(() {
                           _currentWarpMode = value;
-                          // A chamada para a atualização do título principal deve ser aqui
                           _getWarpModeFromCli();
                         });
                         if (mounted) {
@@ -1311,11 +1287,7 @@ void _showSettingsMenu() {
                   ),
                   Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.network_wifi, color: Colors.grey),
-                        iconSize: 22,
-                        onPressed: () {},
-                      ),
+                      NetworkSpeedWidget(isConnected: _isConnected),
                       const SizedBox(width: 6),
                       IconButton(
                         icon: const Icon(Icons.settings, color: Colors.grey),
