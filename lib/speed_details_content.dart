@@ -203,6 +203,18 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
           downloadSpeedTotal += (rxDiff >= 0) ? rxDiff : 0;
           uploadSpeedTotal += (txDiff >= 0) ? txDiff : 0;
           
+          // --- INÍCIO DA CORREÇÃO ---
+          // Adicionamos a lógica para usar `widget.isConnected`
+          // para atualizar o contador correto.
+          if (widget.isConnected) {
+            _cloudflareDownloadTotal += (rxDiff >= 0) ? rxDiff / 1024.0 : 0.0;
+            _cloudflareUploadTotal += (txDiff >= 0) ? txDiff / 1024.0 : 0.0;
+          } else {
+            _otherDownloadTotal += (rxDiff >= 0) ? rxDiff / 1024.0 : 0.0;
+            _otherUploadTotal += (txDiff >= 0) ? txDiff / 1024.0 : 0.0;
+          }
+          // --- FIM DA CORREÇÃO ---
+
           _rxBytesStart[iface] = rxBytesEnd;
           _txBytesStart[iface] = txBytesEnd;
         }
