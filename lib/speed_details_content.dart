@@ -189,7 +189,17 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
           .split('\n')
           .where((iface) => iface.isNotEmpty && iface != 'lo');
 
-      for (var iface in interfaces) {
+      String? warpInterface;
+      if (widget.isConnected) {
+        warpInterface = interfaces.firstWhere(
+          (iface) => iface == 'CloudflareWARP',
+          orElse: () => '',
+        );
+      }
+      
+      final interfacesToRead = (warpInterface != null && warpInterface.isNotEmpty) ? [warpInterface] : interfaces;
+
+      for (var iface in interfacesToRead) {
         final rxBytesFile = File('/sys/class/net/$iface/statistics/rx_bytes');
         final txBytesFile = File('/sys/class/net/$iface/statistics/tx_bytes');
         
@@ -203,9 +213,6 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
           downloadSpeedTotal += (rxDiff >= 0) ? rxDiff : 0;
           uploadSpeedTotal += (txDiff >= 0) ? txDiff : 0;
           
-          // --- INÍCIO DA CORREÇÃO ---
-          // Adicionamos a lógica para usar `widget.isConnected`
-          // para atualizar o contador correto.
           if (widget.isConnected) {
             _cloudflareDownloadTotal += (rxDiff >= 0) ? rxDiff / 1024.0 : 0.0;
             _cloudflareUploadTotal += (txDiff >= 0) ? txDiff / 1024.0 : 0.0;
@@ -213,19 +220,15 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
             _otherDownloadTotal += (rxDiff >= 0) ? rxDiff / 1024.0 : 0.0;
             _otherUploadTotal += (txDiff >= 0) ? txDiff / 1024.0 : 0.0;
           }
-          // --- FIM DA CORREÇÃO ---
 
           _rxBytesStart[iface] = rxBytesEnd;
           _txBytesStart[iface] = txBytesEnd;
         }
       }
       
-      downloadSpeedTotal = downloadSpeedTotal / 2.0; 
-      uploadSpeedTotal = uploadSpeedTotal / 2.0;
-
-      _targetDownloadSpeed = downloadSpeedTotal;
+      _targetDownloadSpeed = downloadSpeedTotal; 
       _targetUploadSpeed = uploadSpeedTotal;
-      
+
       if (downloadSpeedTotal > _maxDownloadSpeed) {
         _maxDownloadSpeed = downloadSpeedTotal;
         _lastDownloadPeakTime = DateTime.now();
