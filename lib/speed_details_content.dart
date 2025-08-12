@@ -1,5 +1,3 @@
-// lib/speed_details_content.dart
-
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:async';
@@ -15,7 +13,7 @@ class SpeedDetailsContent extends StatefulWidget {
   State<SpeedDetailsContent> createState() => _SpeedDetailsContentState();
 }
 
-class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
+class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTickerProviderStateMixin {
   Timer? _speedUpdateTimer;
 
   double _cloudflareDownloadTotal = 0.0;
@@ -25,6 +23,20 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
 
   double _currentDownloadSpeed = 0.0;
   double _currentUploadSpeed = 0.0;
+  double _maxDownloadSpeed = 0.0;
+  double _maxUploadSpeed = 0.0;
+
+  DateTime? _lastDownloadPeakTime;
+  double _highestDownloadSpeedSinceLastPeak = 0.0;
+
+  DateTime? _lastUploadPeakTime;
+  double _highestUploadSpeedSinceLastPeak = 0.0;
+
+  late AnimationController _animationController;
+  late Animation<double> _downloadAnimation;
+  late Animation<double> _uploadAnimation;
+  double _targetDownloadSpeed = 0.0;
+  double _targetUploadSpeed = 0.0;
 
   Map<String, int> _rxBytesStart = {};
   Map<String, int> _txBytesStart = {};
@@ -33,6 +45,15 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
   static const _cloudflareUploadKey = 'cloudflareUploadTotal';
   static const _otherDownloadKey = 'otherDownloadTotal';
   static const _otherUploadKey = 'otherUploadTotal';
+  static const _maxDownloadSpeedKey = 'maxDownloadSpeed';
+  static const _maxUploadSpeedKey = 'maxUploadSpeed';
+  static const _lastDownloadPeakTimeKey = 'lastDownloadPeakTime';
+  static const _highestDownloadSpeedSinceLastPeakKey = 'highestDownloadSpeedSinceLastPeak';
+  static const _lastUploadPeakTimeKey = 'lastUploadPeakTime';
+  static const _highestUploadSpeedSinceLastPeakKey = 'highestUploadSpeedSinceLastPeak';
+
+  static const _defaultMaxSpeedMB = 12.5;
+  static const _adjustmentPeriodHours = 3;
 
   @override
   void initState() {
@@ -41,11 +62,31 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _startSpeedListener();
     });
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+
+    _downloadAnimation = Tween<double>(begin: 0.0, end: 0.0).animate(_animationController)
+      ..addListener(() {
+        setState(() {
+          _currentDownloadSpeed = _downloadAnimation.value;
+        });
+      });
+      
+    _uploadAnimation = Tween<double>(begin: 0.0, end: 0.0).animate(_animationController)
+      ..addListener(() {
+        setState(() {
+          _currentUploadSpeed = _uploadAnimation.value;
+        });
+      });
   }
 
   @override
   void dispose() {
     _speedUpdateTimer?.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -56,6 +97,22 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
       _cloudflareUploadTotal = prefs.getDouble(_cloudflareUploadKey) ?? 0.0;
       _otherDownloadTotal = prefs.getDouble(_otherDownloadKey) ?? 0.0;
       _otherUploadTotal = prefs.getDouble(_otherUploadKey) ?? 0.0;
+      
+      final defaultMaxBytes = _defaultMaxSpeedMB * 1024 * 1024;
+      _maxDownloadSpeed = prefs.getDouble(_maxDownloadSpeedKey) ?? defaultMaxBytes;
+      _maxUploadSpeed = prefs.getDouble(_maxUploadSpeedKey) ?? (defaultMaxBytes / 2.0);
+
+      final lastDownloadPeakTimeString = prefs.getString(_lastDownloadPeakTimeKey);
+      if (lastDownloadPeakTimeString != null) {
+        _lastDownloadPeakTime = DateTime.parse(lastDownloadPeakTimeString);
+      }
+      _highestDownloadSpeedSinceLastPeak = prefs.getDouble(_highestDownloadSpeedSinceLastPeakKey) ?? 0.0;
+      
+      final lastUploadPeakTimeString = prefs.getString(_lastUploadPeakTimeKey);
+      if (lastUploadPeakTimeString != null) {
+        _lastUploadPeakTime = DateTime.parse(lastUploadPeakTimeString);
+      }
+      _highestUploadSpeedSinceLastPeak = prefs.getDouble(_highestUploadSpeedSinceLastPeakKey) ?? 0.0;
     });
   }
 
@@ -65,6 +122,22 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
     await prefs.setDouble(_cloudflareUploadKey, _cloudflareUploadTotal);
     await prefs.setDouble(_otherDownloadKey, _otherDownloadTotal);
     await prefs.setDouble(_otherUploadKey, _otherUploadTotal);
+    await prefs.setDouble(_maxDownloadSpeedKey, _maxDownloadSpeed);
+    await prefs.setDouble(_maxUploadSpeedKey, _maxUploadSpeed);
+    
+    if (_lastDownloadPeakTime != null) {
+      await prefs.setString(_lastDownloadPeakTimeKey, _lastDownloadPeakTime!.toIso8601String());
+    } else {
+      await prefs.remove(_lastDownloadPeakTimeKey);
+    }
+    await prefs.setDouble(_highestDownloadSpeedSinceLastPeakKey, _highestDownloadSpeedSinceLastPeak);
+    
+    if (_lastUploadPeakTime != null) {
+      await prefs.setString(_lastUploadPeakTimeKey, _lastUploadPeakTime!.toIso8601String());
+    } else {
+      await prefs.remove(_lastUploadPeakTimeKey);
+    }
+    await prefs.setDouble(_highestUploadSpeedSinceLastPeakKey, _highestUploadSpeedSinceLastPeak);
   }
 
   Future<void> _startSpeedListener() async {
@@ -134,22 +207,59 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
           _txBytesStart[iface] = txBytesEnd;
         }
       }
+      
+      downloadSpeedTotal = downloadSpeedTotal / 2.0; 
+      uploadSpeedTotal = uploadSpeedTotal / 2.0;
+
+      _targetDownloadSpeed = downloadSpeedTotal;
+      _targetUploadSpeed = uploadSpeedTotal;
+      
+      if (downloadSpeedTotal > _maxDownloadSpeed) {
+        _maxDownloadSpeed = downloadSpeedTotal;
+        _lastDownloadPeakTime = DateTime.now();
+        _highestDownloadSpeedSinceLastPeak = 0.0;
+      } else {
+        _lastDownloadPeakTime ??= DateTime.now();
+        if (downloadSpeedTotal > _highestDownloadSpeedSinceLastPeak) {
+          _highestDownloadSpeedSinceLastPeak = downloadSpeedTotal;
+        }
+        final timeSinceLastPeak = DateTime.now().difference(_lastDownloadPeakTime!).inHours;
+        if (timeSinceLastPeak >= _adjustmentPeriodHours) {
+          if (_highestDownloadSpeedSinceLastPeak > 0) {
+            _maxDownloadSpeed = _highestDownloadSpeedSinceLastPeak;
+          }
+          _lastDownloadPeakTime = DateTime.now();
+          _highestDownloadSpeedSinceLastPeak = 0.0;
+        }
+      }
+      
+      if (uploadSpeedTotal > _maxUploadSpeed) {
+        _maxUploadSpeed = uploadSpeedTotal;
+        _lastUploadPeakTime = DateTime.now();
+        _highestUploadSpeedSinceLastPeak = 0.0;
+      } else {
+        _lastUploadPeakTime ??= DateTime.now();
+        if (uploadSpeedTotal > _highestUploadSpeedSinceLastPeak) {
+          _highestUploadSpeedSinceLastPeak = uploadSpeedTotal;
+        }
+        final timeSinceLastPeak = DateTime.now().difference(_lastUploadPeakTime!).inHours;
+        if (timeSinceLastPeak >= _adjustmentPeriodHours) {
+          if (_highestUploadSpeedSinceLastPeak > 0) {
+            _maxUploadSpeed = _highestUploadSpeedSinceLastPeak;
+          }
+          _lastUploadPeakTime = DateTime.now();
+          _highestUploadSpeedSinceLastPeak = 0.0;
+        }
+      }
 
       setState(() {
-        _currentDownloadSpeed = downloadSpeedTotal;
-        _currentUploadSpeed = uploadSpeedTotal;
-
-        if (widget.isConnected) {
-          _cloudflareDownloadTotal += downloadSpeedTotal / 1024;
-          _cloudflareUploadTotal += uploadSpeedTotal / 1024;
-        } else {
-          _otherDownloadTotal += downloadSpeedTotal / 1024;
-          _otherUploadTotal += uploadSpeedTotal / 1024;
-        }
+        _downloadAnimation = Tween<double>(begin: _currentDownloadSpeed, end: _targetDownloadSpeed).animate(_animationController);
+        _uploadAnimation = Tween<double>(begin: _currentUploadSpeed, end: _targetUploadSpeed).animate(_animationController);
+        _animationController.forward(from: 0.0);
       });
+
       _saveCounters();
     } catch (e) {
-      // Ignora erros silenciosamente
     }
   }
 
@@ -159,6 +269,21 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
       _cloudflareUploadTotal = 0.0;
       _otherDownloadTotal = 0.0;
       _otherUploadTotal = 0.0;
+      
+      final defaultMaxBytes = _defaultMaxSpeedMB * 1024 * 1024;
+      _maxDownloadSpeed = defaultMaxBytes; 
+      _maxUploadSpeed = defaultMaxBytes / 2.0;
+
+      _lastDownloadPeakTime = DateTime.now();
+      _highestDownloadSpeedSinceLastPeak = 0.0;
+      _lastUploadPeakTime = DateTime.now();
+      _highestUploadSpeedSinceLastPeak = 0.0;
+      
+      _targetDownloadSpeed = 0.0;
+      _targetUploadSpeed = 0.0;
+      _downloadAnimation = Tween<double>(begin: _currentDownloadSpeed, end: 0.0).animate(_animationController);
+      _uploadAnimation = Tween<double>(begin: _currentUploadSpeed, end: 0.0).animate(_animationController);
+      _animationController.forward(from: 0.0);
     });
     _saveCounters();
   }
@@ -169,11 +294,11 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
     } else if (bytesPerSecond < 1024 * 1024) {
       return '${(bytesPerSecond / 1024).toStringAsFixed(2)} KB/s';
     } else if (bytesPerSecond < 1024 * 1024 * 1024) {
-      return '${(bytesPerSecond / (1024 * 1024)).toStringAsFixed(2)} MB/s';
+      return '${(bytesPerSecond / (1024 * 1024) * 8).toStringAsFixed(2)} Mb/s';
     } else if (bytesPerSecond < 1024 * 1024 * 1024 * 1024) {
-      return '${(bytesPerSecond / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB/s';
+      return '${(bytesPerSecond / (1024 * 1024 * 1024) * 8).toStringAsFixed(2)} Gb/s';
     } else {
-      return '${(bytesPerSecond / (1024 * 1024 * 1024 * 1024)).toStringAsFixed(2)} TB/s';
+      return '${(bytesPerSecond / (1024 * 1024 * 1024 * 1024) * 8).toStringAsFixed(2)} Tb/s';
     }
   }
 
@@ -187,6 +312,30 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
     } else {
       return '${(kilobytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} TB';
     }
+  }
+  
+  Widget _buildSpeedBar(double currentSpeed, double maxSpeed) {
+    final double progressValue = (maxSpeed > 0) ? (currentSpeed / maxSpeed) : 0.0;
+
+    Color barColor;
+    if (progressValue < 0.33) {
+      barColor = Colors.yellow;
+    } else if (progressValue < 0.66) {
+      barColor = Colors.orange;
+    } else {
+      barColor = Colors.red;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: LinearProgressIndicator(
+        value: progressValue,
+        backgroundColor: barColor.withOpacity(0.2),
+        color: barColor,
+        minHeight: 10,
+        borderRadius: BorderRadius.circular(5),
+      ),
+    );
   }
 
   @override
@@ -260,7 +409,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
       ),
     );
   }
-
+  
   Widget _buildSpeedDisplay() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,6 +424,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
             ),
           ],
         ),
+        _buildSpeedBar(_currentDownloadSpeed, _maxDownloadSpeed),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -286,6 +436,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> {
             ),
           ],
         ),
+        _buildSpeedBar(_currentUploadSpeed, _maxUploadSpeed),
       ],
     );
   }
