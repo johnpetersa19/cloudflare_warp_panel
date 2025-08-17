@@ -1,6 +1,10 @@
 <div align="center">
-  [![ENG](https://img.shields.io/badge/ENG-English-blue?style=for-the-badge)](README.md)
-  [![PT](https://img.shields.io/badge/PT-Português-red?style=for-the-badge)](README_PT.md)
+  <a href="README.md">
+    <img src="https://img.shields.io/badge/🇺🇸_English-4A90E2?style=for-the-badge&logoColor=white" alt="English"/>
+  </a>
+  <a href="README_PT.md">
+    <img src="https://img.shields.io/badge/🇧🇷_Português-28A745?style=for-the-badge&logoColor=white" alt="Português"/>
+  </a>
 </div>
 
 <br>
@@ -160,7 +164,7 @@
 <img src="docs/inicial_1.png" alt="Disconnected initial screen" width="400px" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 
 ### ⚙️ Settings Panel
-<img src="docs/opçoes.png" alt="Settings screen" width="400px" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+<img src="docs/opções.png" alt="Settings screen" width="400px" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 
 </div>
 
@@ -174,7 +178,7 @@
 |:----------:|-------------|:------:|
 | **Flutter** | Cross-platform framework for native interfaces | ![Flutter](https://img.shields.io/badge/3.x-blue) |
 | **bitsdojo_window** | Advanced desktop window customization | ![Package](https://img.shields.io/badge/latest-green) |
-| **flutter_svg** | SVG icons and logos rendering | ![Package](https://img.js.org/badge/latest-green) |
+| **flutter_svg** | SVG icons and logos rendering | ![Package](https://img.shields.io/badge/latest-green) |
 | **shared_preferences** | Local data storage for user preferences | ![Package](https://img.shields.io/badge/latest-green) |
 | **path_provider** | Cross-platform file system path provider | ![Package](https://img.shields.io/badge/latest-green) |
 | **url_launcher** | In-app and external URL launcher | ![Package](https://img.shields.io/badge/latest-green) |
@@ -199,7 +203,7 @@ Run the project in development mode:
 
 ```bash
 # Clone the repository
-git clone [https://github.com/johnpetersa19/cloudflare_warp_panel.git](https://github.com/johnpetersa19/cloudflare_warp_panel.git)
+git clone https://github.com/johnpetersa19/cloudflare_warp_panel.git
 cd cloudflare_warp_panel
 
 # Install dependencies
@@ -233,7 +237,7 @@ chmod +x build/linux/x64/release/bundle/cloudflare_warp_panel
 
 ---
 
-## 🏗️ Architecture
+## 🗂️ Architecture
 
 The application is built with a modular architecture:
 
@@ -305,7 +309,7 @@ Have an amazing idea? [Create an Issue](https://github.com/johnpetersa19/cloudfl
 
 ### 🎯 **Phase 4 - Enhancement** (Planned)
 
-- [ ] 🌐 Multi-language support
+- [ ] 🌍 Multi-language support
 - [ ] 🔔 System notifications
 - [ ] 🎨 Customizable themes
 - [ ] 🚀 Auto-updater
@@ -314,7 +318,7 @@ Have an amazing idea? [Create an Issue](https://github.com/johnpetersa19/cloudfl
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [[LICENSE](https://github.com/johnpetersa19/cloudflare_warp_panel/blob/main/LICENSE.txt)] file for more details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/johnpetersa19/cloudflare_warp_panel/blob/main/LICENSE.txt) file for more details.
 
 ---
 
