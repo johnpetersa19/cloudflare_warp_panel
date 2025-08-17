@@ -1,9 +1,9 @@
 <div align="center">
   <a href="README.md">
-    <img src="https://img.shields.io/badge/ENG-English-4A90E2?style=for-the-badge&logo=&logoColor=white" alt="English Version"/>
+    <img src="https://img.shields.io/badge/🇺🇸_English-4A90E2?style=for-the-badge&logoColor=white" alt="English"/>
   </a>
   <a href="README_PT.md">
-    <img src="https://img.shields.io/badge/PT-Portugu%C3%AAs-28A745?style=for-the-badge&logo=&logoColor=white" alt="Versão Portuguesa"/>
+    <img src="https://img.shields.io/badge/🇧🇷_Português-28A745?style=for-the-badge&logoColor=white" alt="Português"/>
   </a>
 </div>
 
