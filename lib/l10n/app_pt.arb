@@ -1,0 +1,291 @@
+{
+  "appTitle": "Painel Cloudflare WARP",
+  "connected": "Conectado",
+  "disconnected": "Desconectado",
+  "error": "Erro",
+  "legalNotice": "Aviso Legal",
+  "dataUsage": "Uso de Dados",
+  "ok": "OK",
+  "zeroTrustLogin": "Login Zero Trust",
+  "pleaseEnterTeamName": "Por favor, insira o nome da sua equipe.",
+  "errorRegisteringTeam": "Erro ao registrar a equipe: {stderr}",
+  "@errorRegisteringTeam": {
+    "description": "Mensagem de erro para registro falho.",
+    "placeholders": {
+      "stderr": {
+        "type": "String"
+      }
+    }
+  },
+  "registrationSuccessful": "Registro bem-sucedido. Por favor, verifique seu navegador para continuar.",
+  "fatalErrorWarpCli": "ERRO FATAL: Falha ao executar o comando warp-cli: {error}",
+  "@fatalErrorWarpCli": {
+    "description": "Mensagem de erro fatal para warp-cli.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "revertedToFreeMode": "Revertido para o modo WARP gratuito. Por favor, verifique o painel principal.",
+  "errorReverting": "Erro ao reverter para o modo gratuito: {error}",
+  "@errorReverting": {
+    "description": "Mensagem de erro ao reverter para o modo gratuito.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "zeroTrust": "Zero Trust",
+  "yourTeamName": "Nome da sua equipe",
+  "loginViaBrowser": "Entrar via navegador",
+  "revertToFreeWarp": "Reverter para o WARP Gratuito",
+  "disconnectedStatus": "DESCONECTADO",
+  "notPrivateInternet": "Sua Internet não está privada.",
+  "loading": "Carregando...",
+  "warp": "WARP",
+  "notInstalled": "NÃO INSTALADO",
+  "warpCliNotFound": "warp-cli não encontrado.",
+  "connectedStatus": "CONECTADO",
+  "privateInternet": "Sua Internet está privada.",
+  "connectingStatus": "CONECTANDO...",
+  "attemptingToConnect": "Tentando conectar.",
+  "statusUnknown": "STATUS DESCONHECIDO",
+  "couldNotGetStatus": "Não foi possível obter um status válido.",
+  "errorWarpCliNotInstalled": "Erro: warp-cli não está instalado.",
+  "errorResultStderr": "Erro: {stderr}",
+  "@errorResultStderr": {
+    "description": "Mensagem de erro do stderr.",
+    "placeholders": {
+      "stderr": {
+        "type": "String"
+      }
+    }
+  },
+  "errorWarpCliFailed": "Erro: O comando warp-cli falhou.",
+  "doh": "DoH",
+  "warpDoh": "WARP + DoH",
+  "dot": "DoT",
+  "warpDot": "WARP + DoT",
+  "proxy": "Proxy",
+  "tunnelOnly": "Apenas Túnel",
+  "aboutCloudflare": "Sobre a Cloudflare",
+  "privacyPolicy": "Política de privacidade",
+  "termsOfService": "Termos de serviço",
+  "thirdPartyLicenses": "Licenças de terceiros",
+  "version": "Versão {version}",
+  "@version": {
+    "description": "Versão do aplicativo.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "copyright": "Copyright © 2023 Cloudflare, Inc.",
+  "registrationSettings": "Configurações de Registro",
+  "showRegistrationInfo": "Mostrar informações de registro",
+  "deleteCurrentRegistration": "Excluir registro atual",
+  "registerNewClient": "Registrar novo cliente",
+  "registrationInfo": "Informações de Registro",
+  "dnsSettings": "Configurações de DNS",
+  "showDnsStats": "Mostrar estatísticas de DNS",
+  "showDefaultFallbacks": "Mostrar fallbacks padrão",
+  "toggleDnsLogging": "Alternar registro de DNS",
+  "setFallbackDomain": "Definir Domínio de Fallback",
+  "dnsStats": "Estatísticas de DNS",
+  "defaultDnsFallbacks": "Fallbacks de DNS Padrão",
+  "proxySettings": "Configurações de Proxy",
+  "setProxyPort": "Definir Porta de Proxy",
+  "setPort": "Definir Porta",
+  "trustedNetworks": "Redes Confiáveis",
+  "showStatistics": "Mostrar Estatísticas",
+  "tunnelSettings": "Configurações de Túnel",
+  "vnetSettings": "Configurações de VNet",
+  "debugMenu": "Menu de Depuração",
+  "showNetworkInfo": "Mostrar Informações de Rede",
+  "showPostureInfo": "Mostrar Informações de Postura",
+  "showDexData": "Mostrar dados DEX",
+  "toggleConnectivityCheck": "Alternar verificação de conectividade",
+  "networkInfo": "Informações de Rede",
+  "postureInfo": "Informações de Postura",
+  "dexData": "Dados DEX",
+  "connectivityCheck": "Verificação de Conectividade",
+  "tunnelStats": "Estatísticas do Túnel",
+  "rotateTunnelKeys": "Rotacionar Chaves do Túnel",
+  "virtualNetwork": "Rede Virtual (VNet)",
+  "currentVnet": "VNet Atual: {vnet}",
+  "@currentVnet": {
+    "description": "VNet Atual.",
+    "placeholders": {
+      "vnet": {
+        "type": "String"
+      }
+    }
+  },
+  "setNewVnet": "Definir Nova VNet",
+  "setVnet": "Definir VNet",
+  "vnetSet": "VNet Definida",
+  "newVnetSet": "Nova VNet foi definida para {newVnet}",
+  "@newVnetSet": {
+    "description": "Mensagem de confirmação após definir uma nova VNet.",
+    "placeholders": {
+      "newVnet": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmLogout": "Tem certeza de que deseja sair do Cloudflare Zero Trust?",
+  "logoutDescription": "Após o logout, você será desassociado do Cloudflare Zero Trust.",
+  "cancel": "Cancelar",
+  "confirmLogoutButton": "Confirmar logout",
+  "environmentSettings": "Configurações de Ambiente",
+  "setNewEnvironment": "Definir novo ambiente",
+  "setButton": "Definir",
+  "resetButton": "Redefinir",
+  "environmentStatus": "Status do Ambiente",
+  "mdmConfigs": "Configurações MDM",
+  "getMdmConfigs": "Obter configurações MDM",
+  "overrideSettings": "Configurações de Substituição",
+  "showOverrides": "Mostrar substituições",
+  "unlockPolicies": "Desbloquear políticas",
+  "localNetworkOverride": "Substituição de Rede Local",
+  "overrideStatus": "Status de Substituição",
+  "targets": "Alvos",
+  "listAllTargets": "Listar todos os alvos",
+  "showCertificates": "Mostrar Certificados",
+  "accountCertificates": "Certificados da Conta",
+  "allowAccess": "Permitir acesso",
+  "showAccess": "Mostrar acesso",
+  "stopAccess": "Parar acesso",
+  "localNetworkStatus": "Status da Rede Local",
+  "trustedSsids": "SSIDs Confiáveis",
+  "listSsids": "Listar SSIDs",
+  "addSsid": "Adicionar SSID",
+  "removeSsid": "Remover SSID",
+  "resetSsids": "Redefinir SSIDs",
+  "enterSsidName": "Digite o Nome do SSID",
+  "addButton": "Adicionar",
+  "removeButton": "Remover",
+  "warpControlScreenText": "CLOUDFLARE WARP",
+  "legalNoticeConfirmation": "Aviso Legal e Confirmação",
+  "importantInfoPanel": "Informações Importantes Sobre o Painel",
+  "appDescription1": "Este aplicativo é um painel de controle gráfico (GUI) desenvolvido por um usuário para facilitar a interação com o programa oficial do Cloudflare WARP no Linux. Ele NÃO é o aplicativo oficial do Cloudflare.",
+  "appDescription2": "Para que este painel funcione corretamente, é ESSENCIAL que você tenha o Cloudflare WARP oficial para Linux instalado em seu sistema. Este projeto NÃO coleta NENHUM dado do usuário. A responsabilidade pela operação, privacidade e segurança do seu tráfego de internet é inteiramente da Cloudflare, pois este painel apenas envia comandos para o programa WARP já instalado.",
+  "confirmationText": "Ao clicar em \"Eu entendi\", você confirma que leu, compreendeu e aceitou os termos acima. Sua confirmação será salva localmente em seu dispositivo, e este aviso não será exibido novamente em futuros lançamentos do painel.",
+  "iUnderstand": "Eu entendi",
+  "savingConfirmation": "Iniciando o processo de salvamento da confirmação...",
+  "appSupportDirFound": "Diretório de suporte do aplicativo encontrado: {path}",
+  "@appSupportDirFound": {
+    "description": "Mensagem com o caminho do diretório de suporte do aplicativo.",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "checkingPrefsDir": "Tentando verificar se o diretório de preferências existe: {path}",
+  "@checkingPrefsDir": {
+    "description": "Mensagem com o caminho do diretório de preferências.",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "dirDoesNotExist": "O diretório não existe. Tentando criar...",
+  "prefsDirCreated": "Diretório de preferências criado com sucesso.",
+  "prefsDirExists": "O diretório de preferências já existe.",
+  "hasSeenLegalNoticeSaved": "A preferência hasSeenLegalNotice foi salva com sucesso.",
+  "navigationInitiated": "Navegação para a tela principal iniciada.",
+  "fatalErrorSavePref": "ERRO FATAL: Falha ao salvar a preferência ou criar o diretório. Detalhes: {error}",
+  "@fatalErrorSavePref": {
+    "description": "Mensagem de erro fatal para salvar preferências.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorReadNetworkStats": "ERRO: Falha ao ler arquivos de estatísticas de rede: {error}.",
+  "@errorReadNetworkStats": {
+    "description": "Mensagem de erro para leitura de estatísticas de rede.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "currentSpeed": "Velocidade Atual",
+  "totalDataTransferred": "Total de Dados Transferidos",
+  "resetCounters": "Redefinir Contadores",
+  "connectedViaWarp": "Conectado via WARP",
+  "notConnectedViaWarp": "Não conectado via WARP",
+  "downloadSpeed": "Download: {speed}",
+  "@downloadSpeed": {
+    "description": "Velocidade de download atual.",
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "uploadSpeed": "Upload: {speed}",
+  "@uploadSpeed": {
+    "description": "Velocidade de upload atual.",
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "warpSection": "WARP",
+  "warpDownload": "Download: {data}",
+  "@warpDownload": {
+    "description": "Total de dados de download via WARP.",
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "warpUpload": "Upload: {data}",
+  "@warpUpload": {
+    "description": "Total de dados de upload via WARP.",
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "outsideWarp": "Fora do WARP",
+  "outsideWarpDownload": "Download: {data}",
+  "@outsideWarpDownload": {
+    "description": "Total de dados de download fora do WARP.",
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "outsideWarpUpload": "Upload: {data}",
+  "@outsideWarpUpload": {
+    "description": "Total de dados de upload fora do WARP.",
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "trustedNetworksDialogTitle": "Redes Confiáveis",
+  "manageTrustedSsids": "Gerenciar SSIDs confiáveis",
+  "toggleTrustedEthernet": "Alternar Ethernet confiável",
+  "toggleTrustedWifi": "Alternar Wi-Fi confiável",
+  "settings": "Configurações",
+  "targetList": "Lista de Alvos",
+  "logoutFromZeroTrust": "Sair do Zero Trust",
+  "reauthenticateSession": "Reautenticar sessão",
+  "aboutZeroTrust": "Sobre o Zero Trust"
+}
+

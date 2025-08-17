@@ -1,0 +1,291 @@
+{
+  "appTitle": "Cloudflare WARP Panel",
+  "connected": "Connected",
+  "disconnected": "Disconnected",
+  "error": "Error",
+  "legalNotice": "Legal Notice",
+  "dataUsage": "Data Usage",
+  "ok": "OK",
+  "zeroTrustLogin": "Zero Trust Login",
+  "pleaseEnterTeamName": "Please enter your team name.",
+  "errorRegisteringTeam": "Error registering team: {stderr}",
+  "@errorRegisteringTeam": {
+    "description": "Error message for failed registration.",
+    "placeholders": {
+      "stderr": {
+        "type": "String"
+      }
+    }
+  },
+  "registrationSuccessful": "Registration successful. Please check your browser to continue.",
+  "fatalErrorWarpCli": "FATAL ERROR: Failed to execute warp-cli command: {error}",
+  "@fatalErrorWarpCli": {
+    "description": "Fatal error message for warp-cli.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "revertedToFreeMode": "Reverted to free WARP mode. Please check the main dashboard.",
+  "errorReverting": "Error reverting to free mode: {error}",
+  "@errorReverting": {
+    "description": "Error message for reverting to free mode.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "zeroTrust": "Zero Trust",
+  "yourTeamName": "Your team name",
+  "loginViaBrowser": "Login via browser",
+  "revertToFreeWarp": "Revert to Free WARP",
+  "disconnectedStatus": "DISCONNECTED",
+  "notPrivateInternet": "Your Internet is not private.",
+  "loading": "Loading...",
+  "warp": "WARP",
+  "notInstalled": "NOT INSTALLED",
+  "warpCliNotFound": "WARP-CLI not found.",
+  "connectedStatus": "CONNECTED",
+  "privateInternet": "Your Internet is private.",
+  "connectingStatus": "CONNECTING...",
+  "attemptingToConnect": "Attempting to connect.",
+  "statusUnknown": "STATUS UNKNOWN",
+  "couldNotGetStatus": "Could not get a valid status.",
+  "errorWarpCliNotInstalled": "Error: warp-cli is not installed.",
+  "errorResultStderr": "Error: {stderr}",
+  "@errorResultStderr": {
+    "description": "Error message from stderr.",
+    "placeholders": {
+      "stderr": {
+        "type": "String"
+      }
+    }
+  },
+  "errorWarpCliFailed": "Error: The warp-cli command failed.",
+  "doh": "DoH",
+  "warpDoh": "WARP + DoH",
+  "dot": "DoT",
+  "warpDot": "WARP + DoT",
+  "proxy": "Proxy",
+  "tunnelOnly": "Tunnel Only",
+  "aboutCloudflare": "About Cloudflare",
+  "privacyPolicy": "Privacy policy",
+  "termsOfService": "Terms of service",
+  "thirdPartyLicenses": "Third party licenses",
+  "version": "Version {version}",
+  "@version": {
+    "description": "Version of the application.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "copyright": "Copyright © 2023 Cloudflare, Inc.",
+  "registrationSettings": "Registration Settings",
+  "showRegistrationInfo": "Show registration info",
+  "deleteCurrentRegistration": "Delete current registration",
+  "registerNewClient": "Register new client",
+  "registrationInfo": "Registration Info",
+  "dnsSettings": "DNS Settings",
+  "showDnsStats": "Show DNS stats",
+  "showDefaultFallbacks": "Show default fallbacks",
+  "toggleDnsLogging": "Toggle DNS logging",
+  "setFallbackDomain": "Set Fallback Domain",
+  "dnsStats": "DNS Stats",
+  "defaultDnsFallbacks": "Default DNS Fallbacks",
+  "proxySettings": "Proxy Settings",
+  "setProxyPort": "Set Proxy Port",
+  "setPort": "Set Port",
+  "trustedNetworks": "Trusted Networks",
+  "showStatistics": "Show Statistics",
+  "tunnelSettings": "Tunnel Settings",
+  "vnetSettings": "VNet Settings",
+  "debugMenu": "Debug Menu",
+  "showNetworkInfo": "Show Network Info",
+  "showPostureInfo": "Show Posture Info",
+  "showDexData": "Show DEX data",
+  "toggleConnectivityCheck": "Toggle connectivity check",
+  "networkInfo": "Network Info",
+  "postureInfo": "Posture Info",
+  "dexData": "DEX Data",
+  "connectivityCheck": "Connectivity Check",
+  "tunnelStats": "Tunnel Stats",
+  "rotateTunnelKeys": "Rotate Tunnel Keys",
+  "virtualNetwork": "Virtual Network (VNet)",
+  "currentVnet": "Current Vnet: {vnet}",
+  "@currentVnet": {
+    "description": "Current VNet.",
+    "placeholders": {
+      "vnet": {
+        "type": "String"
+      }
+    }
+  },
+  "setNewVnet": "Set New Vnet",
+  "setVnet": "Set VNet",
+  "vnetSet": "VNet Set",
+  "newVnetSet": "New VNet has been set to {newVnet}",
+  "@newVnetSet": {
+    "description": "Confirmation message after setting a new VNet.",
+    "placeholders": {
+      "newVnet": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmLogout": "Are you sure you want to logout from Cloudflare Zero Trust?",
+  "logoutDescription": "After the logout, you will be disassociated from Cloudflare Zero Trust.",
+  "cancel": "Cancel",
+  "confirmLogoutButton": "Confirm logout",
+  "environmentSettings": "Environment Settings",
+  "setNewEnvironment": "Set new environment",
+  "setButton": "Set",
+  "resetButton": "Reset",
+  "environmentStatus": "Environment Status",
+  "mdmConfigs": "MDM Configurations",
+  "getMdmConfigs": "Get MDM configs",
+  "overrideSettings": "Override Settings",
+  "showOverrides": "Show overrides",
+  "unlockPolicies": "Unlock policies",
+  "localNetworkOverride": "Local Network Override",
+  "overrideStatus": "Override Status",
+  "targets": "Targets",
+  "listAllTargets": "List all targets",
+  "showCertificates": "Show Certificates",
+  "accountCertificates": "Account Certificates",
+  "allowAccess": "Allow access",
+  "showAccess": "Show access",
+  "stopAccess": "Stop access",
+  "localNetworkStatus": "Local Network Status",
+  "trustedSsids": "Trusted SSIDs",
+  "listSsids": "List SSIDs",
+  "addSsid": "Add SSID",
+  "removeSsid": "Remove SSID",
+  "resetSsids": "Reset SSIDs",
+  "enterSsidName": "Enter SSID Name",
+  "addButton": "Add",
+  "removeButton": "Remove",
+  "warpControlScreenText": "CLOUDFLARE WARP",
+  "legalNoticeConfirmation": "Legal Notice and Confirmation",
+  "importantInfoPanel": "Important Information About the Panel",
+  "appDescription1": "This app is a graphical control panel (GUI) developed by a user to make it easier to interact with the official Cloudflare WARP program on Linux. It is NOT the official Cloudflare application.",
+  "appDescription2": "For this panel to work properly, it is ESSENTIAL that you have the official Cloudflare WARP for Linux installed on your system. This project DOES NOT collect ANY user data. Responsibility for the operation, privacy, and security of your internet traffic lies entirely with Cloudflare, as this panel only sends commands to the already installed official WARP program.",
+  "confirmationText": "By clicking \"I understand\", you confirm that you have read, understood, and accepted the above terms. Your confirmation will be saved locally on your device, and this notice will not be shown again on future launches of the panel.",
+  "iUnderstand": "I understand",
+  "savingConfirmation": "Starting the process of saving confirmation...",
+  "appSupportDirFound": "Application support directory found: {path}",
+  "@appSupportDirFound": {
+    "description": "Message with the application support directory path.",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "checkingPrefsDir": "Attempting to check if the preferences directory exists: {path}",
+  "@checkingPrefsDir": {
+    "description": "Message with the preferences directory path.",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "dirDoesNotExist": "Directory does not exist. Attempting to create...",
+  "prefsDirCreated": "Preferences directory created successfully.",
+  "prefsDirExists": "Preferences directory already exists.",
+  "hasSeenLegalNoticeSaved": "The hasSeenLegalNotice preference has been saved successfully.",
+  "navigationInitiated": "Navigation to the main screen initiated.",
+  "fatalErrorSavePref": "FATAL ERROR: Failed to save preference or create directory. Details: {error}",
+  "@fatalErrorSavePref": {
+    "description": "Fatal error message for saving preferences.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorReadNetworkStats": "ERROR: Failed to read network statistics files: {error}.",
+  "@errorReadNetworkStats": {
+    "description": "Error message for reading network stats.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "currentSpeed": "Current Speed",
+  "totalDataTransferred": "Total Data Transferred",
+  "resetCounters": "Reset Counters",
+  "connectedViaWarp": "Connected via WARP",
+  "notConnectedViaWarp": "Not connected via WARP",
+  "downloadSpeed": "Download: {speed}",
+  "@downloadSpeed": {
+    "description": "Current download speed.",
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "uploadSpeed": "Upload: {speed}",
+  "@uploadSpeed": {
+    "description": "Current upload speed.",
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "warpSection": "WARP",
+  "warpDownload": "Download: {data}",
+  "@warpDownload": {
+    "description": "Total download data via WARP.",
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "warpUpload": "Upload: {data}",
+  "@warpUpload": {
+    "description": "Total upload data via WARP.",
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "outsideWarp": "Outside WARP",
+  "outsideWarpDownload": "Download: {data}",
+  "@outsideWarpDownload": {
+    "description": "Total download data outside of WARP.",
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "outsideWarpUpload": "Upload: {data}",
+  "@outsideWarpUpload": {
+    "description": "Total upload data outside of WARP.",
+    "placeholders": {
+      "data": {
+        "type": "String"
+      }
+    }
+  },
+  "trustedNetworksDialogTitle": "Trusted Networks",
+  "manageTrustedSsids": "Manage trusted SSIDs",
+  "toggleTrustedEthernet": "Toggle trusted Ethernet",
+  "toggleTrustedWifi": "Toggle trusted Wi-Fi",
+  "settings": "Settings",
+  "targetList": "Target List",
+  "logoutFromZeroTrust": "Logout from Zero Trust",
+  "reauthenticateSession": "Re-authenticate session",
+  "aboutZeroTrust": "About Zero Trust"
+}
+

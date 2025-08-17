@@ -8,6 +8,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'zero_trust_login_screen.dart';
 import 'trusted_networks_dialog.dart';
 import 'network_speed_widget.dart';
+import 'l10n/app_localizations.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'language_selector.dart';
+import 'main.dart'; // Importa o main.dart para acessar o setLocale da MyApp
 
 class WarpControlScreen extends StatefulWidget {
   const WarpControlScreen({super.key});
@@ -29,19 +33,16 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   String _mainTitle = 'WARP';
   final Color _warpColor = const Color(0xFFF65B54);
   final Color _disconnectColor = Colors.grey[400]!;
-
+  
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isWarpCliInstalled) {
+      _getWarpModeFromCli();
+      _startStatusListener();
+    }
     _checkWarpCliInstallation();
     _getWarpCliVersion();
-    
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_isWarpCliInstalled) {
-        _getWarpModeFromCli();
-        _startStatusListener();
-      }
-    });
   }
 
   @override
@@ -51,6 +52,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   }
 
   Future<void> _checkWarpCliInstallation() async {
+    final localizations = AppLocalizations.of(context);
     try {
       await Process.run('/usr/bin/warp-cli', ['--version']);
       if (mounted) {
@@ -63,8 +65,8 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
       if (mounted) {
         setState(() {
           _isWarpCliInstalled = false;
-          _statusText = 'NOT INSTALLED';
-          _privateText = 'WARP-CLI not found.';
+          _statusText = localizations?.notInstalled ?? 'NOT INSTALLED';
+          _privateText = localizations?.warpCliNotFound ?? 'WARP-CLI not found.';
           _currentIconPath = 'assets/zero-trust-connected-exclamation.svg';
         });
       }
@@ -72,6 +74,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   }
 
   Future<void> _startStatusListener() async {
+    final localizations = AppLocalizations.of(context);
     try {
       _statusListenerProcess = await Process.start('/usr/bin/warp-cli', ['--listen', 'status']);
       
@@ -83,8 +86,8 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
       if (mounted) {
         setState(() {
           _isWarpCliInstalled = false;
-          _statusText = 'NOT INSTALLED';
-          _privateText = 'WARP-CLI not found.';
+          _statusText = localizations?.notInstalled ?? 'NOT INSTALLED';
+          _privateText = localizations?.warpCliNotFound ?? 'WARP-CLI not found.';
           _currentIconPath = 'assets/zero-trust-connected-exclamation.svg';
         });
       }
@@ -95,27 +98,28 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
     if (mounted) {
       setState(() {
         final cleanedOutput = output.trim();
+        final localizations = AppLocalizations.of(context);
         if (cleanedOutput.contains('Connected')) {
           _isConnected = true;
-          _statusText = 'CONNECTED';
-          _privateText = 'Your Internet is private.';
+          _statusText = localizations?.connectedStatus ?? 'CONNECTED';
+          _privateText = localizations?.privateInternet ?? 'Your Internet is private.';
           _currentIconPath = 'assets/zero-trust-connected.svg';
           _getWarpModeFromCli();
         } else if (cleanedOutput.contains('Disconnected')) {
           _isConnected = false;
-          _statusText = 'DISCONNECTED';
-          _privateText = 'Your Internet is not private.';
+          _statusText = localizations?.disconnectedStatus ?? 'DISCONNECTED';
+          _privateText = localizations?.notPrivateInternet ?? 'Your Internet is not private.';
           _currentIconPath = 'assets/zero-trust-disconnected.svg';
           _getWarpModeFromCli();
         } else if (cleanedOutput.contains('Connecting')) {
           _isConnected = false;
-          _statusText = 'CONNECTING...';
-          _privateText = 'Attempting to connect.';
+          _statusText = localizations?.connectingStatus ?? 'CONNECTING...';
+          _privateText = localizations?.attemptingToConnect ?? 'Attempting to connect.';
           _currentIconPath = 'assets/zero-trust-connecting.svg';
         } else {
           _isConnected = false;
-          _statusText = 'STATUS UNKNOWN';
-          _privateText = 'Could not get a valid status.';
+          _statusText = localizations?.statusUnknown ?? 'STATUS UNKNOWN';
+          _privateText = localizations?.couldNotGetStatus ?? 'Could not get a valid status.';
           _currentIconPath = 'assets/zero-trust-error.svg';
         }
       });
@@ -123,8 +127,9 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   }
 
   Future<String> _executeWarpCommand(String command, [List<String> arguments = const []]) async {
+    final localizations = AppLocalizations.of(context);
     if (!_isWarpCliInstalled && command != '--version') {
-      return 'Error: warp-cli is not installed.';
+      return localizations?.errorWarpCliNotInstalled ?? 'Error: warp-cli is not installed.';
     }
     try {
       final List<String> cmdArgs = [command, ...arguments];
@@ -132,14 +137,15 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
       if (result.exitCode == 0) {
         return result.stdout.toString().trim();
       } else {
-        return 'Error: ${result.stderr}';
+        return localizations?.errorResultStderr(result.stderr.toString()) ?? 'Error: ${result.stderr}';
       }
     } catch (e) {
-      return 'Error: The warp-cli command failed.';
+      return localizations?.errorWarpCliFailed ?? 'Error: The warp-cli command failed.';
     }
   }
 
   Future<void> _getWarpCliVersion() async {
+    final localizations = AppLocalizations.of(context);
     final versionOutput = await _executeWarpCommand('--version');
     if (mounted) {
       setState(() {
@@ -149,31 +155,32 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   }
   
   Future<void> _getWarpModeFromCli() async {
+    final localizations = AppLocalizations.of(context);
     try {
       final modeOutput = await _executeWarpCommand('settings', ['list']);
       if (mounted) {
         setState(() {
           if (modeOutput.contains('Mode: DnsOverHttps')) {
             _currentWarpMode = 'doh';
-            _mainTitle = 'DoH';
+            _mainTitle = localizations?.doh ?? 'DoH';
           } else if (modeOutput.contains('Mode: WarpWithDnsOverHttps')) {
             _currentWarpMode = 'warp+doh';
-            _mainTitle = 'WARP + DoH';
+            _mainTitle = localizations?.warpDoh ?? 'WARP + DoH';
           } else if (modeOutput.contains('Mode: DnsOverTls')) {
             _currentWarpMode = 'dot';
-            _mainTitle = 'DoT';
+            _mainTitle = localizations?.dot ?? 'DoT';
           } else if (modeOutput.contains('Mode: WarpWithDnsOverTls')) {
             _currentWarpMode = 'warp+dot';
-            _mainTitle = 'WARP + DoT';
+            _mainTitle = localizations?.warpDot ?? 'WARP + DoT';
           } else if (modeOutput.contains('Mode: Proxy') || modeOutput.contains('Mode: WarpProxy')) {
             _currentWarpMode = 'proxy';
-            _mainTitle = 'Proxy';
+            _mainTitle = localizations?.proxy ?? 'Proxy';
           } else if (modeOutput.contains('Mode: TunnelOnly')) {
             _currentWarpMode = 'tunnel_only';
-            _mainTitle = 'Tunnel Only';
+            _mainTitle = localizations?.tunnelOnly ?? 'Tunnel Only';
           } else {
             _currentWarpMode = 'warp';
-            _mainTitle = 'WARP';
+            _mainTitle = localizations?.warp ?? 'WARP';
           }
         });
       }
@@ -202,6 +209,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   }
 
   void _showAboutZeroTrustDialog() {
+    final localizations = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) {
@@ -213,10 +221,10 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'About Cloudflare',
-                  style: TextStyle(
+                  localizations?.aboutCloudflare ?? 'About Cloudflare',
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
@@ -242,9 +250,9 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
                 const SizedBox(height: 16),
                 GestureDetector(
                   onTap: () => _launchUrl('https://www.cloudflare.com/pt-br/application/privacypolicy/'),
-                  child: const Text(
-                    'Privacy policy',
-                    style: TextStyle(
+                  child: Text(
+                    localizations?.privacyPolicy ?? 'Privacy policy',
+                    style: const TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline,
                     ),
@@ -253,9 +261,9 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () => _launchUrl('https://www.cloudflare.com/pt-br/application/terms/'),
-                  child: const Text(
-                    'Terms of service',
-                    style: TextStyle(
+                  child: Text(
+                    localizations?.termsOfService ?? 'Terms of service',
+                    style: const TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline,
                     ),
@@ -264,18 +272,18 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () => _launchUrl('https://developers.cloudflare.com/warp-client/legal/3rdparty/'),
-                  child: const Text(
-                    'Third party licenses',
-                    style: TextStyle(
+                  child: Text(
+                    localizations?.thirdPartyLicenses ?? 'Third party licenses',
+                    style: const TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline,
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text('Version $_warpCliVersion'),
+                Text(localizations?.version(_warpCliVersion) ?? 'Version $_warpCliVersion'),
                 const SizedBox(height: 8),
-                const Text('Copyright © 2023 Cloudflare, Inc.'),
+                Text(localizations?.copyright ?? 'Copyright © 2023 Cloudflare, Inc.'),
               ],
             ),
           ),
@@ -285,6 +293,7 @@ class _WarpControlScreenState extends State<WarpControlScreen> {
   }
 
 void _showRegistrationSettingsDialog() {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
@@ -293,9 +302,9 @@ void _showRegistrationSettingsDialog() {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
-        title: const Text(
-          'Registration Settings',
-          style: TextStyle(
+        title: Text(
+          localizations?.registrationSettings ?? 'Registration Settings',
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
@@ -305,15 +314,15 @@ void _showRegistrationSettingsDialog() {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Show registration info'),
+              title: Text(localizations?.showRegistrationInfo ?? 'Show registration info'),
               onTap: () async {
                 final result = await _executeWarpCommand('registration', ['show']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Registration Info', result);
+                _showResultDialog(localizations?.registrationInfo ?? 'Registration Info', result);
               },
             ),
             ListTile(
-              title: const Text('Delete current registration'),
+              title: Text(localizations?.deleteCurrentRegistration ?? 'Delete current registration'),
               onTap: () async {
                 await _executeWarpCommand('registration', ['delete']);
                 _checkWarpStatus();
@@ -321,7 +330,7 @@ void _showRegistrationSettingsDialog() {
               },
             ),
             ListTile(
-              title: const Text('Register new client'),
+              title: Text(localizations?.registerNewClient ?? 'Register new client'),
               onTap: () async {
                 await _executeWarpCommand('registration', ['delete']);
                 await _executeWarpCommand('registration', ['new']);
@@ -337,6 +346,7 @@ void _showRegistrationSettingsDialog() {
 }
 
 void _showResultDialog(String title, String content) {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
@@ -346,7 +356,7 @@ void _showResultDialog(String title, String content) {
         content: SingleChildScrollView(child: Text(content)),
         actions: <Widget>[
           TextButton(
-            child: const Text('OK'),
+            child: Text(localizations?.ok ?? 'OK'),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -359,41 +369,42 @@ void _showResultDialog(String title, String content) {
 
 void _showDnsSettingsDialog() {
   String? fallbackDomain;
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('DNS Settings'),
+        title: Text(localizations?.dnsSettings ?? 'DNS Settings'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('Show DNS stats'),
+                title: Text(localizations?.showDnsStats ?? 'Show DNS stats'),
                 onTap: () async {
                   final result = await _executeWarpCommand('dns', ['stats']);
                   if (mounted) Navigator.of(context).pop();
-                  _showResultDialog('DNS Stats', result);
+                  _showResultDialog(localizations?.dnsStats ?? 'DNS Stats', result);
                 },
               ),
               ListTile(
-                title: const Text('Show default fallbacks'),
+                title: Text(localizations?.showDefaultFallbacks ?? 'Show default fallbacks'),
                 onTap: () async {
                   final result = await _executeWarpCommand('dns', ['default-fallbacks']);
                   if (mounted) Navigator.of(context).pop();
-                  _showResultDialog('Default DNS Fallbacks', result);
+                  _showResultDialog(localizations?.defaultDnsFallbacks ?? 'Default DNS Fallbacks', result);
                 },
               ),
               ListTile(
-                title: const Text('Toggle DNS logging'),
+                title: Text(localizations?.toggleDnsLogging ?? 'Toggle DNS logging'),
                 onTap: () async {
                   await _executeWarpCommand('dns', ['log', 'toggle']);
                   if (mounted) Navigator.of(context).pop();
                 },
               ),
               TextField(
-                decoration: const InputDecoration(labelText: 'Set Fallback Domain'),
+                decoration: InputDecoration(labelText: localizations?.setFallbackDomain ?? 'Set Fallback Domain'),
                 onChanged: (value) => fallbackDomain = value,
                 onSubmitted: (value) async {
                   await _executeWarpCommand('dns', ['fallback', value]);
@@ -410,17 +421,18 @@ void _showDnsSettingsDialog() {
 
 void _showProxySettingsDialog() {
   String? port;
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Proxy Settings'),
+        title: Text(localizations?.proxySettings ?? 'Proxy Settings'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              decoration: const InputDecoration(labelText: 'Set Proxy Port'),
+              decoration: InputDecoration(labelText: localizations?.setProxyPort ?? 'Set Proxy Port'),
               keyboardType: TextInputType.number,
               onChanged: (value) => port = value,
             ),
@@ -431,7 +443,7 @@ void _showProxySettingsDialog() {
                   if (mounted) Navigator.of(context).pop();
                 }
               },
-              child: const Text('Set Port'),
+              child: Text(localizations?.setPort ?? 'Set Port'),
             ),
           ],
         ),
@@ -444,6 +456,7 @@ void _showTrustedNetworksDialog() {
   showDialog(
     context: context,
     builder: (context) {
+      final localizations = AppLocalizations.of(context);
       return TrustedNetworksDialog(
         executeWarpCommand: _executeWarpCommand,
         showTrustedSsidsDialog: _showTrustedSsidsDialog,
@@ -453,53 +466,55 @@ void _showTrustedNetworksDialog() {
 }
 
 void _showStatsDialog() async {
+  final localizations = AppLocalizations.of(context);
   final result = await _executeWarpCommand('stats');
   if (mounted) {
-    _showResultDialog('WARP Stats', result);
+    _showResultDialog(localizations?.showStatistics ?? 'Show Statistics', result);
   }
 }
 
 void _showDebugMenuDialog() {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Debug Menu'),
+        title: Text(localizations?.debugMenu ?? 'Debug Menu'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('Show Network Info'),
+                title: Text(localizations?.showNetworkInfo ?? 'Show Network Info'),
                 onTap: () async {
                   final result = await _executeWarpCommand('debug', ['network']);
                   if (mounted) Navigator.of(context).pop();
-                  _showResultDialog('Network Info', result);
+                  _showResultDialog(localizations?.networkInfo ?? 'Network Info', result);
                 },
               ),
               ListTile(
-                title: const Text('Show Posture Info'),
+                title: Text(localizations?.showPostureInfo ?? 'Show Posture Info'),
                 onTap: () async {
                   final result = await _executeWarpCommand('debug', ['posture']);
                   if (mounted) Navigator.of(context).pop();
-                  _showResultDialog('Posture Info', result);
+                  _showResultDialog(localizations?.postureInfo ?? 'Posture Info', result);
                 },
               ),
               ListTile(
-                title: const Text('Show DEX data'),
+                title: Text(localizations?.showDexData ?? 'Show DEX data'),
                 onTap: () async {
                   final result = await _executeWarpCommand('debug', ['dex']);
                   if (mounted) Navigator.of(context).pop();
-                  _showResultDialog('DEX Data', result);
+                  _showResultDialog(localizations?.dexData ?? 'DEX Data', result);
                 },
               ),
               ListTile(
-                title: const Text('Toggle connectivity check'),
+                title: Text(localizations?.toggleConnectivityCheck ?? 'Toggle connectivity check'),
                 onTap: () async {
                   final result = await _executeWarpCommand('debug', ['connectivity-check', 'toggle']);
                   if (mounted) Navigator.of(context).pop();
-                  _showResultDialog('Connectivity Check', result);
+                  _showResultDialog(localizations?.connectivityCheck ?? 'Connectivity Check', result);
                 },
               ),
             ],
@@ -511,25 +526,26 @@ void _showDebugMenuDialog() {
 }
 
 void _showTunnelSettingsDialog() {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Tunnel Settings'),
+        title: Text(localizations?.tunnelSettings ?? 'Tunnel Settings'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Show Tunnel Stats'),
+              title: Text(localizations?.tunnelStats ?? 'Tunnel Stats'),
               onTap: () async {
                 final result = await _executeWarpCommand('tunnel', ['stats']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Tunnel Stats', result);
+                _showResultDialog(localizations?.tunnelStats ?? 'Tunnel Stats', result);
               },
             ),
             ListTile(
-              title: const Text('Rotate Tunnel Keys'),
+              title: Text(localizations?.rotateTunnelKeys ?? 'Rotate Tunnel Keys'),
               onTap: () async {
                 await _executeWarpCommand('tunnel', ['rotate-keys']);
                 if (mounted) Navigator.of(context).pop();
@@ -543,6 +559,7 @@ void _showTunnelSettingsDialog() {
 }
 
 void _showVnetDialog() async {
+  final localizations = AppLocalizations.of(context);
   final currentVnet = await _executeWarpCommand('vnet');
   String? newVnet;
   showDialog(
@@ -550,13 +567,13 @@ void _showVnetDialog() async {
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Virtual Network (VNet)'),
+        title: Text(localizations?.virtualNetwork ?? 'Virtual Network (VNet)'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Current Vnet: $currentVnet'),
+            Text(localizations?.currentVnet(currentVnet) ?? 'Current Vnet: $currentVnet'),
             TextField(
-              decoration: const InputDecoration(labelText: 'Set New Vnet'),
+              decoration: InputDecoration(labelText: localizations?.setNewVnet ?? 'Set New Vnet'),
               onChanged: (value) => newVnet = value,
             ),
             ElevatedButton(
@@ -564,10 +581,10 @@ void _showVnetDialog() async {
                 if (newVnet != null && newVnet!.isNotEmpty) {
                   await _executeWarpCommand('vnet', [newVnet!]);
                   if (mounted) Navigator.of(context).pop();
-                  _showResultDialog('VNet Set', 'New VNet has been set to $newVnet');
+                  _showResultDialog(localizations?.vnetSet ?? 'VNet Set', localizations?.newVnetSet(newVnet!) ?? 'New VNet has been set to $newVnet');
                 }
               },
-              child: const Text('Set VNet'),
+              child: Text(localizations?.setVnet ?? 'Set VNet'),
             ),
           ],
         ),
@@ -577,23 +594,24 @@ void _showVnetDialog() async {
 }
   
 void _showLogoutConfirmationDialog(BuildContext context) {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Are you sure you want to logout from Cloudflare Zero Trust?'),
-        content: const Text(
-          'After the logout, you will be disassociated from Cloudflare Zero Trust.',
+        title: Text(localizations?.confirmLogout ?? 'Are you sure you want to logout from Cloudflare Zero Trust?'),
+        content: Text(
+          localizations?.logoutDescription ?? 'After the logout, you will be disassociated from Cloudflare Zero Trust.',
         ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: Colors.grey),
+            child: Text(
+              localizations?.cancel ?? 'Cancel',
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
           TextButton(
@@ -605,7 +623,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
                 Navigator.of(context).pop();
               }
             },
-            child: const Text('Confirm logout'),
+            child: Text(localizations?.confirmLogoutButton ?? 'Confirm logout'),
           ),
         ],
       );
@@ -615,17 +633,18 @@ void _showLogoutConfirmationDialog(BuildContext context) {
 
 void _showEnvironmentDialog() {
   String? newEnvironment;
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Environment Settings'),
+        title: Text(localizations?.environmentSettings ?? 'Environment Settings'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              decoration: const InputDecoration(labelText: 'Set new environment'),
+              decoration: InputDecoration(labelText: localizations?.setNewEnvironment ?? 'Set new environment'),
               onChanged: (value) => newEnvironment = value,
             ),
             ElevatedButton(
@@ -633,18 +652,18 @@ void _showEnvironmentDialog() {
                 if (newEnvironment != null && newEnvironment!.isNotEmpty) {
                   final result = await _executeWarpCommand('environment', ['set', newEnvironment!]);
                   if (mounted) Navigator.of(context).pop();
-                  _showResultDialog('Environment Status', result);
+                  _showResultDialog(localizations?.environmentStatus ?? 'Environment Status', result);
                 }
               },
-              child: const Text('Set'),
+              child: Text(localizations?.setButton ?? 'Set'),
             ),
             ElevatedButton(
               onPressed: () async {
                 final result = await _executeWarpCommand('environment', ['reset']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Environment Status', result);
+                _showResultDialog(localizations?.environmentStatus ?? 'Environment Status', result);
               },
-              child: const Text('Reset'),
+              child: Text(localizations?.resetButton ?? 'Reset'),
             ),
           ],
         ),
@@ -654,21 +673,22 @@ void _showEnvironmentDialog() {
 }
 
 void _showMdmDialog() {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('MDM Configurations'),
+        title: Text(localizations?.mdmConfigs ?? 'MDM Configurations'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Get MDM configs'),
+              title: Text(localizations?.getMdmConfigs ?? 'Get MDM configs'),
               onTap: () async {
                 final result = await _executeWarpCommand('mdm', ['get-configs']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('MDM Configs', result);
+                _showResultDialog(localizations?.mdmConfigs ?? 'MDM Configs', result);
               },
             ),
           ],
@@ -679,35 +699,36 @@ void _showMdmDialog() {
 }
 
 void _showOverrideDialog() {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Override Settings'),
+        title: Text(localizations?.overrideSettings ?? 'Override Settings'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Show overrides'),
+              title: Text(localizations?.showOverrides ?? 'Show overrides'),
               onTap: () async {
                 final result = await _executeWarpCommand('override', ['show']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Override Status', result);
+                _showResultDialog(localizations?.overrideStatus ?? 'Override Status', result);
               },
             ),
             ListTile(
-              title: const Text('Unlock policies'),
+              title: Text(localizations?.unlockPolicies ?? 'Unlock policies'),
               onTap: () async {
                 final result = await _executeWarpCommand('override', ['unlock']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Override Status', result);
+                _showResultDialog(localizations?.overrideStatus ?? 'Override Status', result);
               },
             ),
             ListTile(
-              title: const Text('Local Network Override'),
+              title: Text(localizations?.localNetworkOverride ?? 'Local Network Override'),
               onTap: () {
-                Navigator.of(context).pop();
+                if (mounted) Navigator.of(context).pop();
                 _showLocalNetworkOverrideDialog();
               },
             ),
@@ -719,22 +740,23 @@ void _showOverrideDialog() {
 }
 
 void _showTargetDialog() {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Targets'),
+        title: Text(localizations?.targets ?? 'Targets'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('List all targets'),
+                title: Text(localizations?.listAllTargets ?? 'List all targets'),
                 onTap: () async {
                   final result = await _executeWarpCommand('target', ['list']);
                   if (mounted) Navigator.of(context).pop();
-                  _showResultDialog('Targets', result);
+                  _showResultDialog(localizations?.targets ?? 'Targets', result);
                 },
               ),
             ],
@@ -746,44 +768,46 @@ void _showTargetDialog() {
 }
 
 void _showCertsDialog() async {
+  final localizations = AppLocalizations.of(context);
   final result = await _executeWarpCommand('certs');
   if (mounted) {
-    _showResultDialog('Account Certificates', result);
+    _showResultDialog(localizations?.accountCertificates ?? 'Account Certificates', result);
   }
 }
 
 void _showLocalNetworkOverrideDialog() {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Local Network Override'),
+        title: Text(localizations?.localNetworkOverride ?? 'Local Network Override'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Allow access'),
+              title: Text(localizations?.allowAccess ?? 'Allow access'),
               onTap: () async {
                 final result = await _executeWarpCommand('override', ['local-network', 'allow']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Local Network Status', result);
+                _showResultDialog(localizations?.localNetworkStatus ?? 'Local Network Status', result);
               },
             ),
             ListTile(
-              title: const Text('Show access'),
+              title: Text(localizations?.showAccess ?? 'Show access'),
               onTap: () async {
                 final result = await _executeWarpCommand('override', ['local-network', 'show']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Local Network Status', result);
+                _showResultDialog(localizations?.localNetworkStatus ?? 'Local Network Status', result);
               },
             ),
             ListTile(
-              title: const Text('Stop access'),
+              title: Text(localizations?.stopAccess ?? 'Stop access'),
               onTap: () async {
                 final result = await _executeWarpCommand('override', ['local-network', 'stop']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Local Network Status', result);
+                _showResultDialog(localizations?.localNetworkStatus ?? 'Local Network Status', result);
               },
             ),
           ],
@@ -796,43 +820,44 @@ void _showLocalNetworkOverrideDialog() {
 
 void _showTrustedSsidsDialog() {
   String? ssidName;
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Trusted SSIDs'),
+        title: Text(localizations?.trustedSsids ?? 'Trusted SSIDs'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('List SSIDs'),
+              title: Text(localizations?.listSsids ?? 'List SSIDs'),
               onTap: () async {
                 final result = await _executeWarpCommand('trusted', ['ssid', 'list']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Trusted SSIDs', result);
+                _showResultDialog(localizations?.trustedSsids ?? 'Trusted SSIDs', result);
               },
             ),
             ListTile(
-              title: const Text('Add SSID'),
+              title: Text(localizations?.addSsid ?? 'Add SSID'),
               onTap: () {
-                Navigator.of(context).pop();
+                if (mounted) Navigator.of(context).pop();
                 _showAddSsidsDialog();
               },
             ),
             ListTile(
-              title: const Text('Remove SSID'),
+              title: Text(localizations?.removeSsid ?? 'Remove SSID'),
               onTap: () {
-                Navigator.of(context).pop();
+                if (mounted) Navigator.of(context).pop();
                 _showRemoveSsidsDialog();
               },
             ),
             ListTile(
-              title: const Text('Reset SSIDs'),
+              title: Text(localizations?.resetSsids ?? 'Reset SSIDs'),
               onTap: () async {
                 final result = await _executeWarpCommand('trusted', ['ssid', 'reset']);
                 if (mounted) Navigator.of(context).pop();
-                _showResultDialog('Reset SSIDs', result);
+                _showResultDialog(localizations?.resetSsids ?? 'Reset SSIDs', result);
               },
             ),
           ],
@@ -844,17 +869,18 @@ void _showTrustedSsidsDialog() {
 
 void _showAddSsidsDialog() {
   String? ssidName;
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Add SSID'),
+        title: Text(localizations?.addSsid ?? 'Add SSID'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              decoration: const InputDecoration(labelText: 'Enter SSID Name'),
+              decoration: InputDecoration(labelText: localizations?.enterSsidName ?? 'Enter SSID Name'),
               onChanged: (value) => ssidName = value,
             ),
             ElevatedButton(
@@ -864,7 +890,7 @@ void _showAddSsidsDialog() {
                   if (mounted) Navigator.of(context).pop();
                 }
               },
-              child: const Text('Add'),
+              child: Text(localizations?.addButton ?? 'Add'),
             ),
           ],
         ),
@@ -875,17 +901,18 @@ void _showAddSsidsDialog() {
 
 void _showRemoveSsidsDialog() {
   String? ssidName;
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Remove SSID'),
+        title: Text(localizations?.removeSsid ?? 'Remove SSID'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              decoration: const InputDecoration(labelText: 'Enter SSID Name'),
+              decoration: InputDecoration(labelText: localizations?.enterSsidName ?? 'Enter SSID Name'),
               onChanged: (value) => ssidName = value,
             ),
             ElevatedButton(
@@ -895,7 +922,7 @@ void _showRemoveSsidsDialog() {
                   if (mounted) Navigator.of(context).pop();
                 }
               },
-              child: const Text('Remove'),
+              child: Text(localizations?.removeButton ?? 'Remove'),
             ),
           ],
         ),
@@ -906,6 +933,7 @@ void _showRemoveSsidsDialog() {
 
 
 void _showSettingsMenu() {
+  final localizations = AppLocalizations.of(context);
   showDialog(
     context: context,
     builder: (context) {
@@ -914,9 +942,9 @@ void _showSettingsMenu() {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
-        title: const Text(
-          'Settings',
-          style: TextStyle(
+        title: Text(
+          localizations?.settings ?? 'Settings',
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
@@ -929,7 +957,7 @@ void _showSettingsMenu() {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   RadioListTile<String>(
-                    title: const Text('Gateway with DoH'),
+                    title: Text(localizations?.doh ?? 'DoH'),
                     value: 'doh',
                     groupValue: _currentWarpMode,
                     onChanged: (value) async {
@@ -946,7 +974,7 @@ void _showSettingsMenu() {
                     },
                   ),
                   RadioListTile<String>(
-                    title: const Text('Gateway with WARP'),
+                    title: Text(localizations?.warp ?? 'WARP'),
                     value: 'warp',
                     groupValue: _currentWarpMode,
                     onChanged: (value) async {
@@ -963,7 +991,7 @@ void _showSettingsMenu() {
                     },
                   ),
                   RadioListTile<String>(
-                    title: const Text('Gateway with WARP + DoH'),
+                    title: Text(localizations?.warpDoh ?? 'WARP + DoH'),
                     value: 'warp+doh',
                     groupValue: _currentWarpMode,
                     onChanged: (value) async {
@@ -980,7 +1008,7 @@ void _showSettingsMenu() {
                     },
                   ),
                   RadioListTile<String>(
-                    title: const Text('Gateway with DoT'),
+                    title: Text(localizations?.dot ?? 'DoT'),
                     value: 'dot',
                     groupValue: _currentWarpMode,
                     onChanged: (value) async {
@@ -997,7 +1025,7 @@ void _showSettingsMenu() {
                     },
                   ),
                   RadioListTile<String>(
-                    title: const Text('Gateway with WARP + DoT'),
+                    title: Text(localizations?.warpDot ?? 'WARP + DoT'),
                     value: 'warp+dot',
                     groupValue: _currentWarpMode,
                     onChanged: (value) async {
@@ -1014,7 +1042,7 @@ void _showSettingsMenu() {
                     },
                   ),
                   RadioListTile<String>(
-                    title: const Text('Proxy Mode'),
+                    title: Text(localizations?.proxy ?? 'Proxy'),
                     value: 'proxy',
                     groupValue: _currentWarpMode,
                     onChanged: (value) async {
@@ -1033,7 +1061,7 @@ void _showSettingsMenu() {
                     },
                   ),
                   RadioListTile<String>(
-                    title: const Text('Tunnel Only'),
+                    title: Text(localizations?.tunnelOnly ?? 'Tunnel Only'),
                     value: 'tunnel_only',
                     groupValue: _currentWarpMode,
                     onChanged: (value) async {
@@ -1051,49 +1079,49 @@ void _showSettingsMenu() {
                   ),
                   const Divider(),
                   ListTile(
-                    title: const Text('DNS Settings'),
+                    title: Text(localizations?.dnsSettings ?? 'DNS Settings'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showDnsSettingsDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('Proxy Settings'),
+                    title: Text(localizations?.proxySettings ?? 'Proxy Settings'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showProxySettingsDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('Trusted Networks'),
+                    title: Text(localizations?.trustedNetworks ?? 'Trusted Networks'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showTrustedNetworksDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('Show Statistics'),
+                    title: Text(localizations?.showStatistics ?? 'Show Statistics'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showStatsDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('Tunnel Settings'),
+                    title: Text(localizations?.tunnelSettings ?? 'Tunnel Settings'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showTunnelSettingsDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('VNet Settings'),
+                    title: Text(localizations?.vnetSettings ?? 'VNet Settings'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showVnetDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('Debug Menu'),
+                    title: Text(localizations?.debugMenu ?? 'Debug Menu'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showDebugMenuDialog();
@@ -1101,35 +1129,35 @@ void _showSettingsMenu() {
                   ),
                   const Divider(),
                   ListTile(
-                    title: const Text('Environment Settings'),
+                    title: Text(localizations?.environmentSettings ?? 'Environment Settings'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showEnvironmentDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('MDM Settings'),
+                    title: Text(localizations?.mdmConfigs ?? 'MDM Configurations'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showMdmDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('Override Settings'),
+                    title: Text(localizations?.overrideSettings ?? 'Override Settings'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showOverrideDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('Target List'),
+                    title: Text(localizations?.targetList ?? 'Target List'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showTargetDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('Show Certificates'),
+                    title: Text(localizations?.showCertificates ?? 'Show Certificates'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showCertsDialog();
@@ -1137,13 +1165,13 @@ void _showSettingsMenu() {
                   ),
                   const Divider(),
                   ListTile(
-                    title: const Text('Logout from Zero Trust'),
+                    title: Text(localizations?.logoutFromZeroTrust ?? 'Logout from Zero Trust'),
                     onTap: () {
                       _showLogoutConfirmationDialog(context);
                     },
                   ),
                   ListTile(
-                    title: const Text('Re-authenticate session'),
+                    title: Text(localizations?.reauthenticateSession ?? 'Re-authenticate session'),
                     onTap: () async {
                       await _executeWarpCommand('debug', ['access-reauth']);
                       _checkWarpStatus();
@@ -1151,16 +1179,16 @@ void _showSettingsMenu() {
                     },
                   ),
                   ListTile(
-                    title: const Text('Registration Settings'),
+                    title: Text(localizations?.registrationSettings ?? 'Registration Settings'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showRegistrationSettingsDialog();
                     },
                   ),
                   ListTile(
-                    title: const Text('Zero Trust Login'),
+                    title: Text(localizations?.zeroTrustLogin ?? 'Zero Trust Login'),
                     onTap: () {
-                      Navigator.of(context).pop();
+                      if (mounted) Navigator.of(context).pop();
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const ZeroTrustLoginScreen(),
@@ -1169,7 +1197,7 @@ void _showSettingsMenu() {
                     },
                   ),
                   ListTile(
-                    title: const Text('About Zero Trust'),
+                    title: Text(localizations?.aboutZeroTrust ?? 'About Zero Trust'),
                     onTap: () {
                       if (mounted) Navigator.of(context).pop();
                       _showAboutZeroTrustDialog();
@@ -1187,121 +1215,136 @@ void _showSettingsMenu() {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 24),
-            Text(
-              _mainTitle,
-              style: const TextStyle(
-                fontSize: 60,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFF65B54),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24.0),
-              child: SvgPicture.asset(
-                _currentIconPath,
-                width: 100,
-              ),
-            ),
-            Column(
+    final localizations = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 24),
                 Text(
-                  _statusText,
-                  style: TextStyle(
-                    fontSize: 22,
+                  _mainTitle,
+                  style: const TextStyle(
+                    fontSize: 60,
                     fontWeight: FontWeight.bold,
-                    color: _isWarpCliInstalled && _isConnected ? _warpColor : _disconnectColor,
+                    color: Color(0xFFF65B54),
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  _privateText,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: _isWarpCliInstalled ? Colors.grey[600] : Colors.red,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  child: SvgPicture.asset(
+                    _currentIconPath,
+                    width: 100,
                   ),
                 ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
-              child: GestureDetector(
-                onTap: _isWarpCliInstalled ? _toggleWarp : null,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeIn,
-                  width: 120,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: _isWarpCliInstalled && _isConnected ? _warpColor : _disconnectColor,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: AnimatedAlign(
-                    duration: const Duration(milliseconds: 300),
-                    alignment: _isConnected && _isWarpCliInstalled ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      margin: const EdgeInsets.all(5),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
+                Column(
+                  children: [
+                    Text(
+                      _statusText,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: _isWarpCliInstalled && _isConnected ? _warpColor : _disconnectColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _privateText,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: _isWarpCliInstalled ? Colors.grey[600] : Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
+                  child: GestureDetector(
+                    onTap: _isWarpCliInstalled ? _toggleWarp : null,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeIn,
+                      width: 120,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: _isWarpCliInstalled && _isConnected ? _warpColor : _disconnectColor,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: AnimatedAlign(
+                        duration: const Duration(milliseconds: 300),
+                        alignment: _isConnected && _isWarpCliInstalled ? Alignment.centerRight : Alignment.centerLeft,
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          margin: const EdgeInsets.all(5),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 14.0),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Colors.grey[300]!, width: 1.0),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 14.0),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: Colors.grey[300]!, width: 1.0),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/zero-trust-orange.svg',
+                            width: 22,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            localizations?.warpControlScreenText ?? 'CLOUDFLARE WARP',
+                            style: const TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          NetworkSpeedWidget(isConnected: _isConnected),
+                          const SizedBox(width: 6),
+                          IconButton(
+                            icon: const Icon(Icons.settings, color: Colors.grey),
+                            iconSize: 22,
+                            onPressed: _showSettingsMenu,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/zero-trust-orange.svg',
-                        width: 22,
-                      ),
-                      const SizedBox(width: 6),
-                      const Text(
-                        'CLOUDFLARE\nWARP',
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      NetworkSpeedWidget(isConnected: _isConnected),
-                      const SizedBox(width: 6),
-                      IconButton(
-                        icon: const Icon(Icons.settings, color: Colors.grey),
-                        iconSize: 22,
-                        onPressed: _showSettingsMenu,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            right: 8,
+            top: 8,
+            child: LanguageSelector(onChanged: (newLocale) {
+              if (newLocale != null) {
+                MyApp.setLocale(context, newLocale);
+              }
+            }),
+          ),
+        ],
       ),
     );
   }
 }
+

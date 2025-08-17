@@ -1,6 +1,7 @@
 // trusted_networks_dialog.dart
 
 import 'package:flutter/material.dart';
+import 'l10n/app_localizations.dart';
 
 // Definição do tipo de função para o comando WARP CLI
 typedef ExecuteWarpCommand = Future<String> Function(String, [List<String>]);
@@ -48,21 +49,22 @@ class _TrustedNetworksDialogState extends State<TrustedNetworksDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return AlertDialog(
       backgroundColor: Colors.white,
-      title: const Text('Trusted Networks'),
+      title: Text(localizations.trustedNetworksDialogTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            title: const Text('Manage trusted SSIDs'),
+            title: Text(localizations.manageTrustedSsids),
             onTap: () {
-              Navigator.of(context).pop();
+              if (mounted) Navigator.of(context).pop();
               widget.showTrustedSsidsDialog();
             },
           ),
           SwitchListTile(
-            title: const Text('Toggle trusted Ethernet'),
+            title: Text(localizations.toggleTrustedEthernet),
             value: _isTrustedEthernetEnabled,
             onChanged: (bool value) async {
               final command = value ? 'enable' : 'disable';
@@ -75,7 +77,7 @@ class _TrustedNetworksDialogState extends State<TrustedNetworksDialog> {
             },
           ),
           SwitchListTile(
-            title: const Text('Toggle trusted Wi-Fi'),
+            title: Text(localizations.toggleTrustedWifi),
             value: _isTrustedWifiEnabled,
             onChanged: (bool value) async {
               final command = value ? 'enable' : 'disable';
@@ -92,3 +94,4 @@ class _TrustedNetworksDialogState extends State<TrustedNetworksDialog> {
     );
   }
 }
+

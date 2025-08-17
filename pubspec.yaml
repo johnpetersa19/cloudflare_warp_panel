@@ -12,10 +12,16 @@ dependencies:
   flutter_svg: ^2.0.7
   bitsdojo_window: ^0.1.5
   url_launcher: ^6.1.14
-  package_info_plus: ^5.0.1 # Pacote para ler a versão do app
+  package_info_plus: ^5.0.1
   shared_preferences: ^2.2.3
   path_provider: ^2.1.5
 
+
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+
+ 
 
 dev_dependencies:
   flutter_test:
@@ -23,6 +29,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
+  generate: true  
   uses-material-design: true
 
   assets:
@@ -33,3 +40,4 @@ flutter:
     - assets/zero-trust-orange.svg
     - assets/cloudflare-logo.svg
     - assets/zero-trust-connecting.svg
+

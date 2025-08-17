@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
+import 'l10n/app_localizations.dart';
 
 class ZeroTrustLoginScreen extends StatefulWidget {
   const ZeroTrustLoginScreen({super.key});
@@ -20,8 +21,8 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
     if (teamName.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enter your team name.'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.pleaseEnterTeamName),
             backgroundColor: Colors.red,
           ),
         );
@@ -45,18 +46,18 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error registering team: ${registerResult.stderr}'),
+              content: Text(AppLocalizations.of(context)!.errorRegisteringTeam(registerResult.stderr.toString())),
               backgroundColor: Colors.red,
             ),
           );
         }
         // Return a false value to the parent screen in case of failure.
-        Navigator.of(context).pop(false);
+        if (mounted) Navigator.of(context).pop(false);
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registration successful. Please check your browser to continue.'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.registrationSuccessful),
               backgroundColor: Colors.green,
             ),
           );
@@ -68,12 +69,12 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('FATAL ERROR: Failed to execute warp-cli command: $e'),
+            content: Text(AppLocalizations.of(context)!.fatalErrorWarpCli(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
       }
-      Navigator.of(context).pop(false);
+      if (mounted) Navigator.of(context).pop(false);
     } finally {
       _isProcessing.value = false;
     }
@@ -91,8 +92,8 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
         
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Reverted to free WARP mode. Please check the main dashboard.'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.revertedToFreeMode),
               backgroundColor: Colors.blue,
             ),
           );
@@ -102,7 +103,7 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error reverting to free mode: $e'),
+              content: Text(AppLocalizations.of(context)!.errorReverting(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -117,7 +118,7 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Zero Trust Login'),
+        title: Text(AppLocalizations.of(context)!.zeroTrustLogin),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -131,9 +132,9 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Zero Trust',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.zeroTrust,
+                style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF1976D2),
@@ -143,7 +144,7 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
               TextField(
                 controller: _teamNameController,
                 decoration: InputDecoration(
-                  labelText: 'Your team name',
+                  labelText: AppLocalizations.of(context)!.yourTeamName,
                   border: const OutlineInputBorder(),
                   suffix: const Text('.cloudflareaccess.com'),
                 ),
@@ -156,14 +157,14 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
                     onPressed: value ? null : _launchLoginUrl,
                     child: value
                         ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text('Login via browser'),
+                        : Text(AppLocalizations.of(context)!.loginViaBrowser),
                   );
                 },
               ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _revertToFreeMode,
-                child: const Text('Revert to Free WARP'),
+                child: Text(AppLocalizations.of(context)!.revertToFreeWarp),
               ),
             ],
           ),
@@ -172,3 +173,4 @@ class _ZeroTrustLoginScreenState extends State<ZeroTrustLoginScreen> {
     );
   }
 }
+

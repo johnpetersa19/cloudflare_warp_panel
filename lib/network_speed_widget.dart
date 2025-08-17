@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'speed_details_content.dart';
+import 'l10n/app_localizations.dart';
 
 class NetworkSpeedWidget extends StatelessWidget {
   final bool isConnected;
@@ -10,6 +11,7 @@ class NetworkSpeedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return IconButton(
       icon: const Icon(Icons.speed, color: Colors.grey),
       iconSize: 22,
@@ -19,9 +21,9 @@ class NetworkSpeedWidget extends StatelessWidget {
           builder: (BuildContext context) {
             return AlertDialog(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-              title: const Text(
-                'Uso de Dados',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              title: Text(
+                localizations.dataUsage,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               content: SpeedDetailsContent(isConnected: isConnected),
               actions: [
@@ -30,7 +32,7 @@ class NetworkSpeedWidget extends StatelessWidget {
                     // O botão OK apenas fecha o diálogo.
                     Navigator.of(context).pop();
                   },
-                  child: const Text('OK', style: TextStyle(color: Colors.black)),
+                  child: Text(localizations.ok, style: const TextStyle(color: Colors.black)),
                 ),
               ],
             );
@@ -40,3 +42,4 @@ class NetworkSpeedWidget extends StatelessWidget {
     );
   }
 }
+

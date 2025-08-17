@@ -4,39 +4,41 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'warp_control_screen.dart';
+import 'l10n/app_localizations.dart';
 
 class LegalNoticeScreen extends StatelessWidget {
   const LegalNoticeScreen({super.key});
 
   Future<void> _saveConfirmationAndNavigate(BuildContext context) async {
-    print('Starting the process of saving confirmation...');
+    final localizations = AppLocalizations.of(context)!;
+    print(localizations.savingConfirmation);
     try {
       final appSupportDir = await getApplicationSupportDirectory();
-      print('Application support directory found: ${appSupportDir.path}');
+      print(localizations.appSupportDirFound(appSupportDir.path));
 
       final prefsDir = Directory('${appSupportDir.path}/cloudflare_warp_panel');
-      print('Attempting to check if the preferences directory exists: ${prefsDir.path}');
+      print(localizations.checkingPrefsDir(prefsDir.path));
 
       if (!await prefsDir.exists()) {
-        print('Directory does not exist. Attempting to create...');
+        print(localizations.dirDoesNotExist);
         await prefsDir.create(recursive: true);
-        print('Preferences directory created successfully.');
+        print(localizations.prefsDirCreated);
       } else {
-        print('Preferences directory already exists.');
+        print(localizations.prefsDirExists);
       }
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('hasSeenLegalNotice', true);
-      print('The hasSeenLegalNotice preference has been saved successfully.');
+      print(localizations.hasSeenLegalNoticeSaved);
       
       if (context.mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const WarpControlScreen()),
         );
-        print('Navigation to the main screen initiated.');
+        print(localizations.navigationInitiated);
       }
     } catch (e) {
-      print('FATAL ERROR: Failed to save preference or create directory. Details: $e');
+      print(localizations.fatalErrorSavePref(e.toString()));
       if (context.mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const WarpControlScreen()),
@@ -47,12 +49,13 @@ class LegalNoticeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'Legal Notice and Confirmation',
-          style: TextStyle(
+        title: Text(
+          localizations.legalNoticeConfirmation,
+          style: const TextStyle(
             color: Colors.white,
           ),
         ),
@@ -65,9 +68,9 @@ class LegalNoticeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Important Information About the Panel',
-              style: TextStyle(
+            Text(
+              localizations.importantInfoPanel,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
@@ -75,83 +78,83 @@ class LegalNoticeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             RichText(
-              text: const TextSpan(
-                style: TextStyle(fontSize: 16, color: Colors.black87, height: 1.5),
+              text: TextSpan(
+                style: const TextStyle(fontSize: 16, color: Colors.black87, height: 1.5),
                 children: [
                   TextSpan(
-                    text: 'This app is a ',
+                    text: localizations.appDescription1.split('graphical control panel (GUI)')[0],
                   ),
                   TextSpan(
                     text: 'graphical control panel (GUI)',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text: ' developed by a user to make it easier to interact with the ',
+                    text: localizations.appDescription1.split('graphical control panel (GUI)')[1].split('official Cloudflare WARP program')[0],
                   ),
                   TextSpan(
                     text: 'official Cloudflare WARP program',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text: ' on Linux. It is ',
+                    text: localizations.appDescription1.split('official Cloudflare WARP program')[1].split('NOT the official Cloudflare application')[0],
                   ),
                   TextSpan(
                     text: 'NOT the official Cloudflare application',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text: '.',
+                    text: localizations.appDescription1.split('NOT the official Cloudflare application')[1],
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
             RichText(
-              text: const TextSpan(
-                style: TextStyle(fontSize: 16, color: Colors.black87, height: 1.5),
+              text: TextSpan(
+                style: const TextStyle(fontSize: 16, color: Colors.black87, height: 1.5),
                 children: [
                   TextSpan(
-                    text: 'For this panel to work properly, it is ',
+                    text: localizations.appDescription2.split('ESSENTIAL')[0],
                   ),
                   TextSpan(
                     text: 'ESSENTIAL',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text: ' that you have the ',
+                    text: localizations.appDescription2.split('ESSENTIAL')[1].split('official Cloudflare WARP for Linux installed')[0],
                   ),
                   TextSpan(
                     text: 'official Cloudflare WARP for Linux installed',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text: ' on your system. This project ',
+                    text: localizations.appDescription2.split('official Cloudflare WARP for Linux installed')[1].split('DOES NOT collect ANY user data')[0],
                   ),
                   TextSpan(
                     text: 'DOES NOT collect ANY user data',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text: '. Responsibility for the operation, privacy, and security of your internet traffic lies ',
+                    text: localizations.appDescription2.split('DOES NOT collect ANY user data')[1].split('entirely with Cloudflare')[0],
                   ),
                   TextSpan(
                     text: 'entirely with Cloudflare',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text: ', as this panel only sends commands to the already installed official WARP program.',
+                    text: localizations.appDescription2.split('entirely with Cloudflare')[1],
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
             RichText(
-              text: const TextSpan(
-                style: TextStyle(fontSize: 16, color: Colors.black87, height: 1.5),
+              text: TextSpan(
+                style: const TextStyle(fontSize: 16, color: Colors.black87, height: 1.5),
                 children: [
                   TextSpan(
-                    text: 'By clicking "I understand", you confirm that you have read, understood, and accepted the above terms. Your confirmation will be saved locally on your device, and this notice will not be shown again on future launches of the panel.',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    text: localizations.confirmationText,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -169,9 +172,9 @@ class LegalNoticeScreen extends StatelessWidget {
                   ),
                   elevation: 5,
                 ),
-                child: const Text(
-                  'I understand',
-                  style: TextStyle(fontSize: 18),
+                child: Text(
+                  localizations.iUnderstand,
+                  style: const TextStyle(fontSize: 18),
                 ),
               ),
             ),
@@ -181,3 +184,4 @@ class LegalNoticeScreen extends StatelessWidget {
     );
   }
 }
+

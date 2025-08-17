@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/scheduler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'l10n/app_localizations.dart';
 
 class SpeedDetailsContent extends StatefulWidget {
   final bool isConnected;
@@ -148,6 +149,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
   }
 
   Future<void> _readInitialBytes() async {
+    final localizations = AppLocalizations.of(context)!;
     try {
       final result = await Process.run('ls', ['/sys/class/net']);
       final interfaces = (result.stdout as String)
@@ -168,7 +170,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'ERROR: Failed to read network statistics files: $e.',
+              localizations.errorReadNetworkStats(e.toString()),
             ),
             backgroundColor: Colors.red,
           ),
@@ -182,6 +184,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
 
     double downloadSpeedTotal = 0.0;
     double uploadSpeedTotal = 0.0;
+    final localizations = AppLocalizations.of(context)!;
 
     try {
       final result = await Process.run('ls', ['/sys/class/net']);
@@ -244,7 +247,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
             _maxDownloadSpeed = _highestDownloadSpeedSinceLastPeak;
           }
           _lastDownloadPeakTime = DateTime.now();
-          _highestDownloadSpeedSinceLastPeak = 0.0;
+          _highestUploadSpeedSinceLastPeak = 0.0;
         }
       }
       
@@ -355,34 +358,35 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildConnectionStatus(),
+          _buildConnectionStatus(localizations),
           const SizedBox(height: 24),
           
           Text(
-            'Current Speed',
+            localizations.currentSpeed,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          _buildSpeedDisplay(),
+          _buildSpeedDisplay(localizations),
           const SizedBox(height: 24),
 
           Text(
-            'Total Data Transferred',
+            localizations.totalDataTransferred,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          _buildDataCounters(),
+          _buildDataCounters(localizations),
           const SizedBox(height: 24),
 
           ElevatedButton.icon(
             onPressed: _resetCounters,
             icon: const Icon(Icons.refresh),
-            label: const Text('Reset Counters'),
+            label: Text(localizations.resetCounters),
             style: ElevatedButton.styleFrom(
               minimumSize: const Size.fromHeight(50),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -393,9 +397,9 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
     );
   }
 
-  Widget _buildConnectionStatus() {
+  Widget _buildConnectionStatus(AppLocalizations localizations) {
     final color = widget.isConnected ? Colors.blue.shade600 : Colors.red.shade600;
-    final text = widget.isConnected ? 'Connected via WARP' : 'Not connected via WARP';
+    final text = widget.isConnected ? localizations.connectedViaWarp : localizations.notConnectedViaWarp;
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -425,7 +429,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
     );
   }
   
-  Widget _buildSpeedDisplay() {
+  Widget _buildSpeedDisplay(AppLocalizations localizations) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -434,7 +438,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
             const Icon(Icons.arrow_downward, color: Colors.blue, size: 20),
             const SizedBox(width: 8),
             Text(
-              'Download: ${_formatSpeed(_currentDownloadSpeed)}',
+              localizations.downloadSpeed(_formatSpeed(_currentDownloadSpeed)),
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ],
@@ -446,7 +450,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
             const Icon(Icons.arrow_upward, color: Colors.green, size: 20),
             const SizedBox(width: 8),
             Text(
-              'Upload: ${_formatSpeed(_currentUploadSpeed)}',
+              localizations.uploadSpeed(_formatSpeed(_currentUploadSpeed)),
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ],
@@ -456,7 +460,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
     );
   }
 
-  Widget _buildDataCounters() {
+  Widget _buildDataCounters(AppLocalizations localizations) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -470,7 +474,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'WARP',
+                localizations.warpSection,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -482,12 +486,12 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Download: ${_formatData(_cloudflareDownloadTotal)}',
+                    localizations.warpDownload(_formatData(_cloudflareDownloadTotal)),
                     style: TextStyle(color: Colors.blue.shade900.withOpacity(0.8)),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Upload: ${_formatData(_cloudflareUploadTotal)}',
+                    localizations.warpUpload(_formatData(_cloudflareUploadTotal)),
                     style: TextStyle(color: Colors.blue.shade900.withOpacity(0.8)),
                   ),
                 ],
@@ -506,7 +510,7 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Outside WARP',
+                localizations.outsideWarp,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -518,12 +522,12 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Download: ${_formatData(_otherDownloadTotal)}',
+                    localizations.outsideWarpDownload(_formatData(_otherDownloadTotal)),
                     style: TextStyle(color: Colors.grey.shade900.withOpacity(0.8)),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Upload: ${_formatData(_otherUploadTotal)}',
+                    localizations.outsideWarpUpload(_formatData(_otherUploadTotal)),
                     style: TextStyle(color: Colors.grey.shade900.withOpacity(0.8)),
                   ),
                 ],
@@ -535,3 +539,4 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
     );
   }
 }
+
