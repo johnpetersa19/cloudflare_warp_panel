@@ -1,3 +1,11 @@
+<div align="center">
+  [![ENG](https://img.shields.io/badge/ENG-English-blue?style=for-the-badge)](README.md)
+  [![PT](https://img.shields.io/badge/PT-Português-red?style=for-the-badge)](README_PT.md)
+</div>
+
+<br>
+
+<a name="en"></a>
 # 🚀 Cloudflare WARP Panel
 
 **Looking for collaborators to improve the project!**
