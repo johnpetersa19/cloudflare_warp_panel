@@ -1,7 +1,13 @@
 <div align="center">
-  [![ENG](https://img.shields.io/badge/ENG-English-blue?style=for-the-badge)](README.md)
-  [![PT](https://img.shields.io/badge/PT-Português-red?style=for-the-badge)](README_PT.md)
+  <a href="README.md">
+    <img src="https://img.shields.io/badge/ENG-English-4A90E2?style=for-the-badge&logo=&logoColor=white" alt="English Version"/>
+  </a>
+  <a href="README_PT.md">
+    <img src="https://img.shields.io/badge/PT-Portugu%C3%AAs-28A745?style=for-the-badge&logo=&logoColor=white" alt="Versão Portuguesa"/>
+  </a>
 </div>
+
+---
 
 <br>
 
@@ -160,7 +166,7 @@
 <img src="docs/inicial_1.png" alt="Tela inicial desconectada" width="400px" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 
 ### ⚙️ Painel de Configurações
-<img src="docs/opçoes.png" alt="Tela de configurações" width="400px" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+<img src="docs/opções.png" alt="Tela de configurações" width="400px" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 
 </div>
 
@@ -172,7 +178,7 @@
 
 | Tecnologia | Descrição | Versão |
 |:----------:|-------------|:------:|
-| **Flutter** | Estrutura de código para interfaces nativas multiplataforma | ![Flutter](https://img.shields.io/badge/3.x-blue) |
+| **Flutter** | Framework multiplataforma para interfaces nativas | ![Flutter](https://img.shields.io/badge/3.x-blue) |
 | **bitsdojo_window** | Personalização avançada da janela de desktop | ![Package](https://img.shields.io/badge/latest-green) |
 | **flutter_svg** | Renderização de ícones e logotipos SVG | ![Package](https://img.shields.io/badge/latest-green) |
 | **shared_preferences** | Armazenamento local de dados para preferências do usuário | ![Package](https://img.shields.io/badge/latest-green) |
@@ -199,7 +205,7 @@ Execute o projeto no modo de desenvolvimento:
 
 ```bash
 # Clone o repositório
-git clone [https://github.com/johnpetersa19/cloudflare_warp_panel.git](https://github.com/johnpetersa19/cloudflare_warp_panel.git)
+git clone https://github.com/johnpetersa19/cloudflare_warp_panel.git
 cd cloudflare_warp_panel
 
 # Instale as dependências
@@ -233,7 +239,7 @@ chmod +x build/linux/x64/release/bundle/cloudflare_warp_panel
 
 ---
 
-## 🏗️ Arquitetura
+## 🗂️ Arquitetura
 
 O aplicativo é construído com uma arquitetura modular:
 
@@ -305,7 +311,7 @@ Tem uma ideia incrível? [Crie uma Issue](https://github.com/johnpetersa19/cloud
 
 ### 🎯 **Fase 4 - Aprimoramento** (Planejado)
 
-- [ ] 🌐 Suporte a vários idiomas
+- [ ] 🌍 Suporte a vários idiomas
 - [ ] 🔔 Notificações do sistema
 - [ ] 🎨 Temas personalizáveis
 - [ ] 🚀 Auto-atualizador
@@ -314,7 +320,7 @@ Tem uma ideia incrível? [Crie uma Issue](https://github.com/johnpetersa19/cloud
 
 ## 📄 Licença
 
-Este projeto é licenciado sob a Licença MIT. Consulte o arquivo [[LICENSE](https://github.com/johnpetersa19/cloudflare_warp_panel/blob/main/LICENSE.txt)] para mais detalhes.
+Este projeto é licenciado sob a Licença MIT. Consulte o arquivo [LICENSE](https://github.com/johnpetersa19/cloudflare_warp_panel/blob/main/LICENSE.txt) para mais detalhes.
 
 ---
 
