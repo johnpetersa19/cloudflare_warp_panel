@@ -328,4 +328,3 @@ Este projeto é licenciado sob a Licença MIT. Consulte o arquivo [[LICENSE](htt
 **Feito com ❤️ para a comunidade Linux**
 
 </div>
-
