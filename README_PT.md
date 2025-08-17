@@ -311,7 +311,7 @@ Tem uma ideia incrível? [Crie uma Issue](https://github.com/johnpetersa19/cloud
 
 ### 🎯 **Fase 4 - Aprimoramento** (Planejado)
 
-- [ ] 🌍 Suporte a vários idiomas
+- [x] 🌍 Suporte a vários idiomas
 - [ ] 🔔 Notificações do sistema
 - [ ] 🎨 Temas personalizáveis
 - [ ] 🚀 Auto-atualizador
