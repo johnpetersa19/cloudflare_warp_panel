@@ -12,7 +12,7 @@
 <br>
 
 <a name="pt"></a>
-# 🚀 Cloudflare WARP Panel
+# 🚀 Cloudflare WARP Painel
 
 **Procurando por colaboradores para melhorar o projeto!**
 
