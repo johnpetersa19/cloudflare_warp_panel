@@ -1,5 +1,7 @@
 # 🚀 Cloudflare WARP Panel
 
+**Looking for collaborators to improve the project!**
+
 <div align="center">
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
@@ -37,7 +39,7 @@
 <td>
 
 ### ⚙️ **Basic Settings**
-- Mode switching (DoH/WARP)
+- Mode switching (DoH/WARP/WARP+DoH/DoT/WARP+DoT/Proxy/Tunnel Only)
 - Session logout and re-authentication
 - Debug access re-authentication
 
@@ -61,25 +63,19 @@
 
 </td>
 </tr>
-</table>
-
-### 🚧 **In Development**
-
-<table>
 <tr>
 <td>
 
 ### 🌐 **DNS Settings**
 - DNS fallback configuration
 - DNS logging toggle
-- DNS families management
+- Show DNS stats and default fallbacks
 
 </td>
 <td>
 
 ### 🔗 **Proxy Configuration**
 - Custom proxy port settings
-- Proxy mode management
 
 </td>
 </tr>
@@ -87,8 +83,7 @@
 <td>
 
 ### 🎯 **Target Management**
-- List available targets
-- Target switching interface
+- List all available targets
 
 </td>
 <td>
@@ -96,7 +91,7 @@
 ### 🛡️ **Trusted Networks**
 - Ethernet trust settings
 - WiFi trust configuration
-- SSID whitelist management
+- SSID whitelist management (add/remove/list/reset)
 
 </td>
 </tr>
@@ -104,9 +99,9 @@
 <td>
 
 ### 📊 **Statistics & Monitoring**
-- Usage statistics display
-- Connection analytics
-- Performance metrics
+- Real-time usage statistics display
+- Data counters for WARP and non-WARP traffic
+- Peak speed tracking
 
 </td>
 <td>
@@ -114,7 +109,8 @@
 ### 🔧 **Debug Tools**
 - Network debugging interface
 - Posture checking tools
-- Advanced diagnostics
+- DEX data display
+- Connectivity check toggle
 
 </td>
 </tr>
@@ -123,20 +119,25 @@
 
 ### 🚇 **Tunnel Settings**
 - Tunnel statistics
-- Host and IP configuration
-- Key rotation and protocol settings
+- Key rotation
 
 </td>
 <td>
 
 ### 🔌 **Advanced Features**
-- Connector registration
-- Compliance environment settings
+- Environment management (set/reset)
 - Virtual network (VNet) management
+- MDM configuration retrieval
+- Policy overrides (show/unlock/local network access)
+- Show account certificates
 
 </td>
 </tr>
 </table>
+
+### 🚧 **In Development**
+
+> The items from the "In Development" section have been moved to the "Implemented" section because they have already been coded in the project.
 
 ---
 
@@ -165,7 +166,10 @@
 |:----------:|-------------|:------:|
 | **Flutter** | Cross-platform framework for native interfaces | ![Flutter](https://img.shields.io/badge/3.x-blue) |
 | **bitsdojo_window** | Advanced desktop window customization | ![Package](https://img.shields.io/badge/latest-green) |
-| **flutter_svg** | SVG icons and logos rendering | ![Package](https://img.shields.io/badge/latest-green) |
+| **flutter_svg** | SVG icons and logos rendering | ![Package](https://img.js.org/badge/latest-green) |
+| **shared_preferences** | Local data storage for user preferences | ![Package](https://img.shields.io/badge/latest-green) |
+| **path_provider** | Cross-platform file system path provider | ![Package](https://img.shields.io/badge/latest-green) |
+| **url_launcher** | In-app and external URL launcher | ![Package](https://img.shields.io/badge/latest-green) |
 
 </div>
 
@@ -187,7 +191,7 @@ Run the project in development mode:
 
 ```bash
 # Clone the repository
-git clone https://github.com/johnpetersa19/cloudflare_warp_panel.git
+git clone [https://github.com/johnpetersa19/cloudflare_warp_panel.git](https://github.com/johnpetersa19/cloudflare_warp_panel.git)
 cd cloudflare_warp_panel
 
 # Install dependencies
@@ -229,6 +233,8 @@ The application is built with a modular architecture:
 - **Settings Dialogs**: Organized configuration windows
 - **Command Executor**: Generic `warp-cli` command interface
 - **Status Manager**: Real-time connection state monitoring
+- **Data Persistence**: Uses `shared_preferences` for local storage of user preferences and statistics.
+- **Speed Monitoring**: Uses `dart:io` `Process` to read network statistics from `/sys/class/net` and provides real-time animated display.
 
 All functionality is based on the `_executeWarpCommand` function, which provides a standardized way to interact with the Cloudflare WARP CLI.
 
@@ -257,13 +263,6 @@ Have an amazing idea? [Create an Issue](https://github.com/johnpetersa19/cloudfl
 
 ### 🔧 Contribute Code
 
-Priority areas for contribution:
-- **DNS Settings Implementation**: Complete the DNS configuration interface
-- **Statistics Dashboard**: Build the usage statistics display
-- **Trusted Networks**: Implement network trust management
-- **UI/UX Improvements**: Enhance the user interface design
-- **Error Handling**: Improve error messages and validation
-
 1. **Fork** this repository
 2. **Create** a branch for your feature (`git checkout -b feature/awesome-feature`)
 3. **Commit** your changes (`git commit -m 'Add awesome feature'`)
@@ -274,26 +273,30 @@ Priority areas for contribution:
 
 ## 📊 Development Roadmap
 
-### 🎯 **Phase 1 - Core Features** (Current)
+### 🎯 **Phase 1 - Core Features** (Completed)
+
 - [x] Basic connection control
 - [x] Registration management
 - [x] Settings foundation
 - [x] DNS configuration interface
 - [x] Proxy settings panel
 
-### 🎯 **Phase 2 - Advanced Management**
+### 🎯 **Phase 2 - Advanced Management** (Completed)
+
 - [x] Statistics and monitoring
 - [x] Trusted networks configuration
 - [x] Debug tools interface
 - [x] Tunnel management
 
-### 🎯 **Phase 3 - Professional Features**
+### 🎯 **Phase 3 - Professional Features** (Completed)
+
 - [x] Connector support
 - [x] Environment compliance
 - [x] VNet management
 - [x] Advanced debugging
 
-### 🎯 **Phase 4 - Enhancement**
+### 🎯 **Phase 4 - Enhancement** (Planned)
+
 - [ ] 🌐 Multi-language support
 - [ ] 🔔 System notifications
 - [ ] 🎨 Customizable themes
