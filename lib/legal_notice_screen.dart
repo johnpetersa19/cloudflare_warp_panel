@@ -81,30 +81,7 @@ class LegalNoticeScreen extends StatelessWidget {
               text: TextSpan(
                 style: const TextStyle(fontSize: 16, color: Colors.black87, height: 1.5),
                 children: [
-                  TextSpan(
-                    text: localizations.appDescription1.split('graphical control panel (GUI)')[0],
-                  ),
-                  TextSpan(
-                    text: 'graphical control panel (GUI)',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: localizations.appDescription1.split('graphical control panel (GUI)')[1].split('official Cloudflare WARP program')[0],
-                  ),
-                  TextSpan(
-                    text: 'official Cloudflare WARP program',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: localizations.appDescription1.split('official Cloudflare WARP program')[1].split('NOT the official Cloudflare application')[0],
-                  ),
-                  TextSpan(
-                    text: 'NOT the official Cloudflare application',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: localizations.appDescription1.split('NOT the official Cloudflare application')[1],
-                  ),
+                  TextSpan(text: localizations.appDescription1),
                 ],
               ),
             ),
@@ -113,37 +90,7 @@ class LegalNoticeScreen extends StatelessWidget {
               text: TextSpan(
                 style: const TextStyle(fontSize: 16, color: Colors.black87, height: 1.5),
                 children: [
-                  TextSpan(
-                    text: localizations.appDescription2.split('ESSENTIAL')[0],
-                  ),
-                  TextSpan(
-                    text: 'ESSENTIAL',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: localizations.appDescription2.split('ESSENTIAL')[1].split('official Cloudflare WARP for Linux installed')[0],
-                  ),
-                  TextSpan(
-                    text: 'official Cloudflare WARP for Linux installed',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: localizations.appDescription2.split('official Cloudflare WARP for Linux installed')[1].split('DOES NOT collect ANY user data')[0],
-                  ),
-                  TextSpan(
-                    text: 'DOES NOT collect ANY user data',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: localizations.appDescription2.split('DOES NOT collect ANY user data')[1].split('entirely with Cloudflare')[0],
-                  ),
-                  TextSpan(
-                    text: 'entirely with Cloudflare',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: localizations.appDescription2.split('entirely with Cloudflare')[1],
-                  ),
+                  TextSpan(text: localizations.appDescription2),
                 ],
               ),
             ),
@@ -184,4 +131,3 @@ class LegalNoticeScreen extends StatelessWidget {
     );
   }
 }
-
