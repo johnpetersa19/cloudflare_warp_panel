@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:cloudflare_warp_panel/l10n/app_localizations.dart';
+import 'package:cloudflare_warp_panel/main.dart'; 
 
 
 typedef ChangeLocaleCallback = void Function(Locale? locale);
@@ -17,7 +18,8 @@ class LanguageSelector extends StatelessWidget {
       icon: const Icon(Icons.language, color: Colors.grey),
       onSelected: (Locale? newLocale) {
         if (newLocale != null) {
-          onChanged(newLocale);
+
+          MyApp.setLocale(context, newLocale);
         }
       },
       itemBuilder: (BuildContext context) {
@@ -30,7 +32,6 @@ class LanguageSelector extends StatelessWidget {
           );
         }).toList();
       },
-
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),

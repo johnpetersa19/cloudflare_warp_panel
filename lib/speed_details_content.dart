@@ -539,4 +539,3 @@ class _SpeedDetailsContentState extends State<SpeedDetailsContent> with SingleTi
     );
   }
 }
-

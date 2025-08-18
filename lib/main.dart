@@ -9,15 +9,11 @@ import 'l10n/app_localizations.dart';
 import 'warp_control_screen.dart';
 import 'legal_notice_screen.dart';
 
-// Definir a classe MyApp como StatefulWidget
+
 class MyApp extends StatefulWidget {
   final bool hasSeenLegalNotice;
 
   const MyApp({super.key, required this.hasSeenLegalNotice});
-
-  // Adicionar um GlobalKey para o Navigator, para que possamos navegar
-  // e reconstruir a árvore de widgets quando o idioma mudar.
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   // A função para mudar o locale do aplicativo
   static void setLocale(BuildContext context, Locale newLocale) {
@@ -32,7 +28,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   Locale? _locale;
 
-  void setLocale(Locale newLocale) {
+  void setLocale(Locale newLocale) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('appLocale', newLocale.languageCode);
     setState(() {
       _locale = newLocale;
     });
@@ -41,15 +39,28 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // Inicializa o locale com o do sistema, ou com 'pt' como padrão.
-    _locale = const Locale('pt');
+    _loadLocale();
+  }
+  
+  Future<void> _loadLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? savedLocale = prefs.getString('appLocale');
+    if (savedLocale != null) {
+      setState(() {
+        _locale = Locale(savedLocale);
+      });
+    } else {
+
+      setState(() {
+        _locale = WidgetsBinding.instance.platformDispatcher.locale;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      navigatorKey: MyApp.navigatorKey,
       
       localizationsDelegates: const [
         AppLocalizations.delegate,
